@@ -75,8 +75,9 @@ client.on("ready", () => {
         }
 
         const guilds = await client.guilds.fetch();
+        info("currently serving guilds: ");
         for (let guild of guilds) {
-            info(guild);
+            info(`${guild[0]} (${wrap(guild[1], colors.LIGHT_YELLOW)})` );
         }
         for (let entry of results) {
         
@@ -87,7 +88,7 @@ client.on("ready", () => {
             const activity = chatActivityRatio * entry.chat_activity + gameActivityRatio * entry.game_activity;
             let rank = Math.floor(getBaseLog(5, activity + 1));
             let rank_str = `Rank ${rank}`;
-            info(`user: ${entry.ds_nickname}, rank: ${rank}`);
+            info(`found user: ${wrap(entry.ds_nickname, colors.BLUE)}, rank: ${wrap(rank, colors.GREEN)}`);
             
 
             for (let guild of guilds) {
@@ -96,16 +97,25 @@ client.on("ready", () => {
                 let role = guild_sync.roles.cache.find(role => role.name === rank_str);
                 if(!role) {
                     info(`created rank role: ${wrap(rank_str, colors.LIGHTER_BLUE)}`);
-                    for(let i = 0; i < 15; i++) {
-                        role = await guild_sync.roles.create({
-                            name: `Rank ${i}`,
-                            color: hsvToRgb(Math.trunc(rank / 20), 0.9, 0.9)
-                        });
-                    }
-                    
+                    role = await guild_sync.roles.create({
+                        name: `Rank ${rank}`,
+                        color: hsvToRgb((rank / 20.0) % 1, 0.7, 0.9)
+                    });
                 }
 
-                info((await guild_sync.members.fetch({ query: entry.ds_nickname, limit: 1, withPresences: true })).at(0));
+                let member = (await guild_sync.members.fetch({ query: entry.ds_nickname, limit: 1, withPresences: true })).at(0);
+                (await member?.createDM())?.send(`test ${member}`);
+                let previous_role = member?.roles.cache.find(role => role.name.startsWith("Rank"));
+                if (previous_role != role) {
+                    //remove previous role
+                    if (previous_role) {
+                        info(`${wrap("removed", colors.LIGHT_RED)} role ${previous_role.name} from user ${wrap(member?.user.tag, colors.LIGHT_RED)}`);
+                        member?.roles.remove(previous_role);
+                    }
+                    info(`${wrap("added", colors.LIGHT_GREEN)} role ${wrap(role.name, colors.GREEN)} to user ${wrap(member?.user.tag, colors.BLUE)}`);
+                    // add the new role
+                    member?.roles.add(role);
+                }
             }        
         }
 
