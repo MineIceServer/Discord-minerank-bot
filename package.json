@@ -1,0 +1,24 @@
+{
+  "name": "mineice_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPLV3",
+  "dependencies": {
+    "discord_bots_common": "github:dgudim/Discord_bots-common",
+    "discord.js": "^14.3.0",
+    "dkrcommands": "^1.0.0-beta.1",
+    "dotenv": "^16.0.2",
+    "mysql": "^2.18.1",
+    "node-json-db": "^2.1.2",
+    "yaml": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.21"
+  }
+}
