@@ -68,19 +68,10 @@ client.on("ready", () => {
         info(`Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
 
-    updateAllRanks(client);
-
-    
-    //dbConnection.query(`SELECT nickname, ds_nickname, chat_activity, game_activity from ${tableName} WHERE ds_nickname = kloud`,
-    //async function (err, results) {
-    //    if (err || !results.nickname) {
-    //        
-    //    } else {
-    //        
-    //        //updateUserRank(user, calculareRank(results[0].chat_activity, results[0].game_activity));
-    //    }
-    //});
-
+    // every 10 minutes
+    setInterval(function () {
+        updateAllRanks(client);
+    }, parseInt(process.env.RANK_UPDATE_INTERVAL_MINUTES || "10") * 60 * 1000);
 });
 
 client.login(process.env.TOKEN);
