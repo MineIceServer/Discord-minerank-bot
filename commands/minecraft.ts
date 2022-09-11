@@ -22,14 +22,14 @@ export default {
         let interaction_nn = interaction!;
         let id = interaction_nn.options.get("id");
 
-        dbConnection.query(`SELECT id, nickname, ds_nickname, chat_activity, game_activity from ${tableName} WHERE id = ${id}`, 
+        dbConnection.query(`SELECT * from ${tableName} WHERE ds_nickname = ${id}`, 
         async function (err, results) {
             if (err || !results.nickname) {
                 safeReply(interaction_nn, "Invalid id", true);
             } else {
-                dbConnection.query(`ALTER TABLE ${tableName} SET ds_nickname = id_${user.id} WHERE id = ${id}`);
+                dbConnection.query(`UPDATE ${tableName} SET ds_nickname = id_${user.id} WHERE ds_nickname = ${id}`);
                 safeReply(interaction_nn, `Successfully attached to ${results.nickname}`, true);
-                updateUserRank(user, calculareRank(results[0].chat_activity, results[0].game_activity));
+                updateUserRank(user.client, user.id, calculareRank(results[0].chat_activity, results[0].game_activity));
             }
         });
 

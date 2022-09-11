@@ -1,7 +1,4 @@
-import { join } from "path";
-
 import { Client, GatewayIntentBits } from "discord.js";
-import DKRCommands from "dkrcommands"
 
 import * as mysql from "mysql";
 import YAML from 'yaml'
@@ -25,6 +22,7 @@ const client = new Client({
     },
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages
     ]
 });
@@ -53,7 +51,7 @@ client.on("ready", () => {
 
     tableName = data.tableName;
 
-    const dbConnection = mysql.createConnection({
+    dbConnection = mysql.createConnection({
         host: data.db.host,
         port: parseInt(data.db.port),
         database: data.db.dbName,
@@ -69,13 +67,19 @@ client.on("ready", () => {
         }
         info(`Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
-    
+
     updateAllRanks(client);
-    process.exit(0);
-    // run every 15 minutes
-    setInterval(() => {
-        updateAllRanks(client);
-    }, 15 * 60 * 1000);
+
+    
+    //dbConnection.query(`SELECT nickname, ds_nickname, chat_activity, game_activity from ${tableName} WHERE ds_nickname = kloud`,
+    //async function (err, results) {
+    //    if (err || !results.nickname) {
+    //        
+    //    } else {
+    //        
+    //        //updateUserRank(user, calculareRank(results[0].chat_activity, results[0].game_activity));
+    //    }
+    //});
 
 });
 
