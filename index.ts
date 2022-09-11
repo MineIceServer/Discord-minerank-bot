@@ -1,5 +1,7 @@
 import { Client, GatewayIntentBits } from "discord.js";
 
+import path from "path";
+
 import * as mysql from "mysql";
 import YAML from 'yaml'
 import { colors, error, info, wrap } from "discord_bots_common";
@@ -7,6 +9,7 @@ import { colors, error, info, wrap } from "discord_bots_common";
 import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
 import { updateAllRanks } from "./role_utils";
+import { DKRCommands } from "dkrcommands";
 
 dotenv.config();
 
@@ -28,10 +31,13 @@ const client = new Client({
 });
 
 client.on("ready", () => {
-    //new DKRCommands(client, {
-    //    commandsDir: join(__dirname, "commands"),
-    //    typeScript: true
-    //});
+
+    new DKRCommands(client, {
+        commandsDir: path.join(__dirname, 'commands'),
+        typescript: true,
+        botOwners: ['410761741484687371', '470215458889662474'],
+        testServers: [process.env.LOCAL_SERV_ID || '', process.env.FILEBIN_SERV_ID || '', process.env.MINEICE_SERV_ID || '']
+    });
     
     info(`${wrap("Client ready", colors.LIGHT_YELLOW)}`);
 

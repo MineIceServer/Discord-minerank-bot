@@ -1,4 +1,4 @@
-import { Client, GuildMember, OAuth2Guild, Role, Snowflake, User } from "discord.js";
+import { Client, GuildMember, OAuth2Guild, Role, Snowflake } from "discord.js";
 import { colors, error, getBaseLog, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, tableName } from ".";
 
@@ -7,7 +7,7 @@ function guildToString(guild: [Snowflake, OAuth2Guild]): string {
 }
 
 export function calculareRank(chat_activity: number, game_activity: number) {
-    return Math.floor(getBaseLog(5, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
+    return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
 }
 
 export async function updateUserRank(client: Client, userId: Snowflake, rank: number) {
@@ -55,7 +55,7 @@ async function updateGuildMemberRank(member: GuildMember, role: Role) {
 
 export function updateAllRanks(client: Client) {
     info(`${wrap("Time to update all ranks", colors.LIGHT_PURPLE)}`);
-    dbConnection.query(`SELECT * from ${tableName}`, async function (err, results, fields) {
+    dbConnection.query(`SELECT * from ${tableName}`, async function (err, results) {
 
         if (err) {
             error(`${err.message}: ${err.message}`);
@@ -63,24 +63,24 @@ export function updateAllRanks(client: Client) {
         }
 
         const guilds = await client.guilds.fetch();
-        info("\ncurrently serving guilds: ");
+        info(`\ncurrently serving ${guilds.size} guilds: `);
         for (let guild of guilds) {
             info(guildToString(guild));
         }
 
         for (let entry of results) {
 
-            if (!entry.ds_nickname) {
+            if (!entry.ds_id) {
                 continue;
             }
 
             let rank = calculareRank(entry.chat_activity, entry.game_activity);
 
-            if (entry.ds_nickname.startsWith("id_")) {
-                info(`found user: ${wrap(entry.ds_nickname, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)}, rank: ${wrap(rank, colors.GREEN)}`);
-                await updateUserRank(client, entry.ds_nickname.slice(3), rank);
+            if (entry.ds_id.startsWith("id_")) {
+                info(`found user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)}, rank: ${wrap(rank, colors.GREEN)}`);
+                await updateUserRank(client, entry.ds_id.slice(3), rank);
             } else {
-                info(`found unconfirmed user: ${wrap(entry.ds_nickname, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)},\
+                info(`found unconfirmed user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)},\
  rank: ${wrap(rank, colors.GREEN)}, ${wrap("skipping", colors.LIGHT_RED)}`);
             }
         }
