@@ -5,7 +5,7 @@ import { calculareRank, updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
 
 export default {
-    category: 'Miscellaneous',
+    category: 'Ranking',
     description: 'Attach discord to minecraft nickname',
 
     slash: true,

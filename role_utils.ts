@@ -1,6 +1,6 @@
 import { Client, GuildMember, OAuth2Guild, Role, Snowflake } from "discord.js";
 import { colors, error, getBaseLog, hsvToRgb, info, wrap } from "discord_bots_common";
-import { chatActivityRatio, dbConnection, gameActivityRatio, tableName } from ".";
+import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
 
 function guildToString(guild: [Snowflake, OAuth2Guild]): string {
     return `${guild[0]} (${wrap(guild[1], colors.LIGHT_YELLOW)})`;
@@ -61,7 +61,7 @@ async function updateGuildMemberRank(member: GuildMember, role: Role) {
 
 export function updateAllRanks(client: Client) {
     info(`${wrap("🕓 Time to update all ranks", colors.LIGHT_PURPLE)}`);
-    dbConnection.query(`SELECT ds_id, group_concat(nickname separator ', ') as nickname, SUM(chat_activity) as chat_activity, SUM(game_activity) as game_activity FROM ${tableName} WHERE ds_id IS NOT null GROUP BY ds_id`, async function (err, results) {
+    dbConnection.query(getAllQuery, async function (err, results) {
 
         if (err) {
             error(`${err.message}: ${err.message}`);

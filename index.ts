@@ -14,6 +14,7 @@ import { DKRCommands } from "dkrcommands";
 dotenv.config();
 
 export let tableName: string;
+export let getAllQuery: string;
 export let chatActivityRatio: number;
 export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
@@ -56,6 +57,7 @@ client.on("ready", () => {
     }
 
     tableName = data.tableName;
+    getAllQuery = `SELECT ds_id, group_concat(nickname separator ', ') as nickname, SUM(chat_activity) as chat_activity, SUM(game_activity) as game_activity FROM ${tableName} WHERE ds_id IS NOT null GROUP BY ds_id`;
 
     dbConnection = mysql.createConnection({
         host: data.db.host,
