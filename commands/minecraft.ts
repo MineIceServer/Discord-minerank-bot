@@ -25,30 +25,48 @@ export default {
     callback: async ({ interaction, user }) => {
 
         let interaction_nn = interaction!;
-        let id = interaction_nn.options.get("id")?.value?.toString() || "";
+        let user_hash = interaction_nn.options.get("id")?.value?.toString() || "";
 
-        if (id.startsWith("id_")) {
+        if (user_hash.startsWith("id_")) {
             safeReply(interaction_nn, "Invalid id", true);
             return;
         }
 
-        dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${id}'`, 
+        dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`, 
         function (err, results) {
             info(results);
             let nickname = results[0]?.nickname || '';
-            info(`${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(id, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
+            info(`${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
             if (err || !nickname) {
                 error(err);
                 safeReply(interaction_nn, "Invalid id", true);
-            } else {
-                dbConnection.query(`UPDATE ${tableName} SET ds_id = 'id_${user.id}' WHERE ds_id = '${id}'`);
-                safeReply(interaction_nn, `Successfully attached to ${nickname}`, true);
-                try {
-                    updateUserRank(user.client, user.id, calculareRank(results[0].chat_activity, results[0].game_activity));
-                } catch (err) {
-                    safeReply(interaction_nn, `Insufficient permissions: ${err}`, true);
-                }
+                return;
             }
+
+            let user_present = false;
+            dbConnection.query(`SELECT ds_id from ${tableName} WHERE ds_id = 'id_${user.id}'`, 
+            function (err, results) {
+                if(err) {
+                    error(err);
+                }
+                if (results[0].ds_id) {
+                    user_present = true;
+                }
+            });
+
+            if(user_present) {
+                safeReply(interaction_nn, `Can't attach to ${nickname}, you already attached another minecraft account`, true);
+                return;
+            }
+
+            dbConnection.query(`UPDATE ${tableName} SET ds_id = 'id_${user.id}' WHERE ds_id = '${user_hash}'`);
+            safeReply(interaction_nn, `Successfully attached to ${nickname}`, true);
+            try {
+                updateUserRank(user.client, user.id, calculareRank(results[0].chat_activity, results[0].game_activity));
+            } catch (err) {
+                safeReply(interaction_nn, `Insufficient permissions: ${err}`, true);
+            }
+            
         });
 
     }

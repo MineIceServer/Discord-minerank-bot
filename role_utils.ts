@@ -18,7 +18,13 @@ export async function updateUserRank(client: Client, userId: Snowflake, rank: nu
 
     for (let guild of guilds) {
         let guild_sync = await guild[1].fetch();
-        let member = await guild_sync.members.fetch(userId);
+        let member;
+        try{
+            member = await guild_sync.members.fetch(userId);
+        } catch (err) {
+            info(`User ${wrap(userId, colors.LIGHT_GREEN)} not present in ${guildToString(guild)}`);
+        }
+        
 
         if(member) {
             info(`Updating rank of user ${wrap(member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
@@ -78,7 +84,12 @@ export function updateAllRanks(client: Client) {
 
             if (entry.ds_id.startsWith("id_")) {
                 info(`found user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)}, rank: ${wrap(rank, colors.GREEN)}`);
-                await updateUserRank(client, entry.ds_id.slice(3), rank);
+                try {
+                    await updateUserRank(client, entry.ds_id.slice(3), rank);
+                } catch (err) {
+                    error(`Insufficient permissions to update user ${wrap(entry.ds_id, colors.BLUE)}: ${err}`);
+                }
+                
             } else {
                 info(`found unconfirmed user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)},\
  rank: ${wrap(rank, colors.GREEN)}, ${wrap("skipping", colors.LIGHT_RED)}`);
