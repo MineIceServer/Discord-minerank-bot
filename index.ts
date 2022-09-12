@@ -65,13 +65,13 @@ client.on("ready", () => {
         password: data.db.password
     });
 
-    info(`Connecting to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)}`);
+    info(`🔶 Connecting to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)}`);
     dbConnection.connect(function (err) {
         if (err) {
             error(err);
             process.exit(2);
         }
-        info(`Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
+        info(`🟩 Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
 
     // every 10 minutes
