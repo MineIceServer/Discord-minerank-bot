@@ -34,7 +34,6 @@ export default {
 
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`, 
         function (err, results) {
-            info(results);
             let nickname = results[0]?.nickname || '';
             info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
             if (err || !nickname) {
