@@ -10,8 +10,7 @@ import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
 import { updateAllRanks } from "./role_utils";
 import { DKRCommands } from "dkrcommands";
-
-import { status as minestatus } from 'minecraft-server-util';
+import { getServerStatus } from "./status_utils";
 
 dotenv.config();
 
@@ -20,6 +19,9 @@ export let getAllQuery: string;
 export let chatActivityRatio: number;
 export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
+export let minecraftServerUrl = process.env.LOOKUP_SERVER || "";
+minecraftServerUrl = minecraftServerUrl.replace("http://", "");
+minecraftServerUrl = minecraftServerUrl.replace("https://", "");
 
 const client = new Client({
     rest: {
@@ -49,7 +51,7 @@ client.on("ready", () => {
         process.exit(1);
     }
 
-    if (!process.env.LOOKUP_SERVER) {
+    if (!minecraftServerUrl) {
         warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not defined, will not display server player count`);
     }
 
@@ -81,26 +83,21 @@ client.on("ready", () => {
         }
         info(`🟩 Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
-    
-    // every 10 minutes
-    setInterval(function () {
-        if(process.env.LOOKUP_SERVER) {
 
-            minestatus(process.env.LOOKUP_SERVER, 25565, {
-                timeout: 1000 * 5 // timeout in milliseconds
-            })
-                .then((result) => {
-                    client.user?.setPresence({
-                        status: 'online',
-                        activities: [{
-                            name: `${result.players.online}/${result.players.max} players online`,
-                            type: ActivityType.Watching,
-                            url: process.env.LOOKUP_SERVER
-                        }]
-                    });
-                })
-                .catch((error) => error(error));            
-        }
+    // every 10 minutes
+    setInterval(async function () {
+
+        let status = await getServerStatus();
+        if(status) {
+            client.user?.setPresence({
+                status: 'online',
+                activities: [{
+                    name: `${status.players.online}/${status.players.max} players online`,
+                    type: ActivityType.Watching,
+                    url: minecraftServerUrl
+                }]
+            });
+        }      
 
         // update ranks
         updateAllRanks(client);
