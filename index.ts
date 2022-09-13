@@ -1,15 +1,17 @@
-import { Client, GatewayIntentBits } from "discord.js";
+import { ActivityType, Client, GatewayIntentBits } from "discord.js";
 
 import path from "path";
 
 import * as mysql from "mysql";
 import YAML from 'yaml'
-import { colors, error, info, wrap } from "discord_bots_common";
+import { colors, error, info, warn, wrap } from "discord_bots_common";
 
 import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
 import { updateAllRanks } from "./role_utils";
 import { DKRCommands } from "dkrcommands";
+
+import { status as minestatus } from 'minecraft-server-util';
 
 dotenv.config();
 
@@ -40,11 +42,15 @@ client.on("ready", () => {
         testServers: [process.env.LOCAL_SERV_ID || '', process.env.FILEBIN_SERV_ID || '', process.env.MINEICE_SERV_ID || '']
     });
     
-    info(`${wrap("Client ready", colors.LIGHT_YELLOW)}`);
+    info(`${wrap("💁 Client ready", colors.LIGHT_YELLOW)}`);
 
     if (!fs.existsSync(process.env.CONFIG_PATH || "")) {
         error(`invalid config path!`);
         process.exit(1);
+    }
+
+    if (!process.env.LOOKUP_SERVER) {
+        warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not defined, will not display server player count`);
     }
 
     const data = YAML.parse(fs.readFileSync(process.env.CONFIG_PATH!).toString());
@@ -75,9 +81,28 @@ client.on("ready", () => {
         }
         info(`🟩 Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
-
+    
     // every 10 minutes
     setInterval(function () {
+        if(process.env.LOOKUP_SERVER) {
+
+            minestatus(process.env.LOOKUP_SERVER, 25565, {
+                timeout: 1000 * 5 // timeout in milliseconds
+            })
+                .then((result) => {
+                    client.user?.setPresence({
+                        status: 'online',
+                        activities: [{
+                            name: `${result.players.online}/${result.players.max} players online`,
+                            type: ActivityType.Watching,
+                            url: process.env.LOOKUP_SERVER
+                        }]
+                    });
+                })
+                .catch((error) => error(error));            
+        }
+
+        // update ranks
         updateAllRanks(client);
     }, parseInt(process.env.RANK_UPDATE_INTERVAL_MINUTES || "10") * 60 * 1000);
 });
