@@ -99,7 +99,7 @@ client.on("ready", () => {
             client.user?.setPresence({
                 status: 'online',
                 activities: [{
-                    name: `${status.players.online}/${status.players.max} players online`,
+                    name: `${status.motd.clean} - ${status.players.online}/${status.players.max} players online`,
                     url: `https://${minecraftServerUrl}`
                 }]
             });
