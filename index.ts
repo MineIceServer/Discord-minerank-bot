@@ -37,11 +37,16 @@ const client = new Client({
 
 client.on("ready", () => {
 
+    if (!process.env.TEST_SERVERS) {
+        warn(`${wrap("TEST_SERVERS", colors.LIGHT_YELLOW)} environment variable is not set, can't proceed`);
+        process.exit(1);
+    }
+
     new DKRCommands(client, {
         commandsDir: path.join(__dirname, 'commands'),
         typeScript: true,
-        botOwners: ['410761741484687371', '470215458889662474'],
-        testServers: [process.env.LOCAL_SERV_ID || '', process.env.FILEBIN_SERV_ID || '', process.env.MINEICE_SERV_ID || '']
+        botOwners: process.env.OWNERS?.split(","),
+        testServers: process.env.TEST_SERVERS?.split(",")
     });
     
     info(`${wrap("💁 Client ready", colors.LIGHT_YELLOW)}`);
@@ -52,7 +57,7 @@ client.on("ready", () => {
     }
 
     if (!minecraftServerUrl) {
-        warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not defined, will not display server player count`);
+        warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not set, will not display server player count`);
     }
 
     const data = YAML.parse(fs.readFileSync(process.env.CONFIG_PATH!).toString());
