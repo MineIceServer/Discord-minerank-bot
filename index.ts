@@ -92,14 +92,15 @@ client.on("ready", () => {
     // every 10 minutes
     setInterval(async function () {
 
+        info(wrap("Updating presence", colors.PURPLE));
+
         let status = await getServerStatus();
         if(status) {
             client.user?.setPresence({
                 status: 'online',
                 activities: [{
-                    name: `${status.players.online}/${status.players.max} players online`,
-                    type: ActivityType.Watching,
-                    url: minecraftServerUrl
+                    name: `${status.motd.clean} - ${status.players.online}/${status.players.max} players online`,
+                    url: `https://${minecraftServerUrl}`
                 }]
             });
         }      
