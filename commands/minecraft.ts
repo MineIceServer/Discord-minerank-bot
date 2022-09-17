@@ -17,9 +17,9 @@ export default {
         {
             name: 'id',
             description: 'The id you got from minecraft',
-            descriptionLocalizations: {
-                ru: "ID, который вы получили из майнкрафта"
-            },
+            //descriptionLocalizations: {
+            //    ru: "ID, который вы получили из майнкрафта"
+            //},
             required: true,
             type: ApplicationCommandOptionType.String,
         }

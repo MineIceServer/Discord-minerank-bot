@@ -17,7 +17,7 @@ export default {
     ownerOnly: false,
     hidden: false,
 
-    callback: async ({ interaction, user, guild }) => {
+    callback: async ({ interaction, guild }) => {
 
         interaction?.deferReply();
 
@@ -26,11 +26,13 @@ export default {
 
                 if(err) {
                     error(err);
+                    safeReply(interaction!, "🚫 Sql error ocurred");
+                    return;
                 }
 
                 let embed = new EmbedBuilder();
                 embed.setColor("DarkAqua");
-                embed.setTitle(`Leaderboard`);
+                embed.setTitle(`🏆 Leaderboard`);
 
                 let rank_map = new Map<number, string>();
 
@@ -40,7 +42,7 @@ export default {
                     try {
                         nickname = (await guild?.members.fetch(entry.ds_id.slice(3)))?.user.tag || "";
                     } catch (err) {
-                        info(`❌ User ${wrap(entry.ds_id, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
+                        info(`🚫 User ${wrap(entry.ds_id, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
                         continue;
                     }
                     if (rank_map.has(rank)) {

@@ -1,10 +1,10 @@
-import { ActivityType, Client, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 
 import path from "path";
 
 import * as mysql from "mysql";
 import YAML from 'yaml'
-import { colors, error, info, warn, wrap } from "discord_bots_common";
+import { colors, dkrInit, error, info, stripUrlScheme, testEnvironmentVar, warn, wrap } from "discord_bots_common";
 
 import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
@@ -19,9 +19,7 @@ export let getAllQuery: string;
 export let chatActivityRatio: number;
 export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
-export let minecraftServerUrl = process.env.LOOKUP_SERVER || "";
-minecraftServerUrl = minecraftServerUrl.replace("http://", "");
-minecraftServerUrl = minecraftServerUrl.replace("https://", "");
+export let minecraftServerUrl = stripUrlScheme(process.env.LOOKUP_SERVER || "");
 
 const client = new Client({
     rest: {
@@ -37,27 +35,16 @@ const client = new Client({
 
 client.on("ready", () => {
 
-    if (!process.env.TEST_SERVERS) {
-        warn(`${wrap("TEST_SERVERS", colors.LIGHT_YELLOW)} environment variable is not set, can't proceed`);
-        process.exit(1);
-    }
+    testEnvironmentVar(process.env.TEST_SERVERS, "TEST_SERVERS", true);
+    testEnvironmentVar(process.env.OWNERS, "OWNERS", false);
+    testEnvironmentVar(process.env.LOOKUP_SERVER, "LOOKUP_SERVER", false);
+    testEnvironmentVar(process.env.RANK_UPDATE_INTERVAL_MINUTES, "RANK_UPDATE_INTERVAL_MINUTES", false);
 
-    new DKRCommands(client, {
-        commandsDir: path.join(__dirname, 'commands'),
-        typeScript: true,
-        botOwners: process.env.OWNERS?.split(","),
-        testServers: process.env.TEST_SERVERS?.split(",")
-    });
-    
-    info(`${wrap("💁 Client ready", colors.LIGHT_YELLOW)}`);
+    dkrInit(client);
 
     if (!fs.existsSync(process.env.CONFIG_PATH || "")) {
         error(`invalid config path!`);
         process.exit(1);
-    }
-
-    if (!minecraftServerUrl) {
-        warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not set, will not display server player count`);
     }
 
     const data = YAML.parse(fs.readFileSync(process.env.CONFIG_PATH!).toString());
