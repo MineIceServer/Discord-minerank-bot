@@ -1,15 +1,12 @@
 import { Client, GatewayIntentBits } from "discord.js";
 
-import path from "path";
-
 import * as mysql from "mysql";
 import YAML from 'yaml'
-import { colors, dkrInit, error, info, stripUrlScheme, testEnvironmentVar, warn, wrap } from "discord_bots_common";
+import { colors, dkrInit, error, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
 
 import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
 import { updateAllRanks } from "./role_utils";
-import { DKRCommands } from "dkrcommands";
 import { getServerStatus } from "./status_utils";
 
 dotenv.config();
