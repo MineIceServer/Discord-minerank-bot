@@ -37,7 +37,7 @@ client.on("ready", () => {
     testEnvironmentVar(process.env.LOOKUP_SERVER, "LOOKUP_SERVER", false);
     testEnvironmentVar(process.env.RANK_UPDATE_INTERVAL_MINUTES, "RANK_UPDATE_INTERVAL_MINUTES", false);
 
-    dkrInit(client);
+    dkrInit(client, __dirname);
 
     if (!fs.existsSync(process.env.CONFIG_PATH || "")) {
         error(`invalid config path!`);
