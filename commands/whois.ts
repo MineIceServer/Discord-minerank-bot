@@ -1,7 +1,6 @@
 import { ICommand } from "dkrcommands";
-import { ApplicationCommandOptionType, AttachmentBuilder, EmbedBuilder } from "discord.js";
-import { getServerStatus } from "../status_utils";
-import { dbConnection, minecraftServerUrl, tableName } from "..";
+import { ApplicationCommandOptionType } from "discord.js";
+import { dbConnection, tableName } from "..";
 import { error, safeReply } from "discord_bots_common";
 
 export default {
@@ -43,9 +42,9 @@ export default {
                     for(const result of results) {
                         message += ` ${result.nickname}`;
                     }
-                    safeReply(interaction_nn, message);
+                    safeReply(interaction_nn, message, true);
                 } else {
-                    safeReply(interaction_nn, "🚫 No associated minecraft nickanmes");
+                    safeReply(interaction_nn, "🚫 No associated minecraft nickanmes", true);
                 }
 
             });
