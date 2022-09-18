@@ -18,7 +18,7 @@ export async function updateUserRank(client: Client, userId: Snowflake, rank: nu
         try{
             member = await guild_sync.members.fetch(userId);
         } catch (err) {
-            info(`❌ User ${wrap(userId, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
+            info(`🚫 User ${wrap(userId, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
         }
         
 
@@ -79,7 +79,7 @@ export function updateAllRanks(client: Client) {
                 try {
                     await updateUserRank(client, entry.ds_id.slice(3), rank);
                 } catch (err) {
-                    error(`🚫 Insufficient permissions to update user ${wrap(entry.ds_id, colors.BLUE)}: ${err}`);
+                    error(`❌ Insufficient permissions to update user ${wrap(entry.ds_id, colors.BLUE)}: ${err}`);
                 }
                 
             } else {

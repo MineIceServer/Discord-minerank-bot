@@ -26,7 +26,7 @@ export default {
 
                 if(err) {
                     error(err);
-                    safeReply(interaction!, "🚫 Sql error ocurred");
+                    safeReply(interaction!, "❌ Sql error ocurred");
                     return;
                 }
 
@@ -66,7 +66,7 @@ export default {
                         actual_users ++;
                     }
                 }
-                embed.setDescription(`${actual_users} users`);
+                embed.setDescription(`${actual_users} users 👤`);
 
                 safeReply(interaction!, embed);
 

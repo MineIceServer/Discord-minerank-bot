@@ -33,7 +33,7 @@ export default {
 
                 if (err) {
                     error(err);
-                    safeReply(interaction_nn, "🚫 Sql error ocurred", true);
+                    safeReply(interaction_nn, "❌ Sql error ocurred", true);
                     return;
                 }
 

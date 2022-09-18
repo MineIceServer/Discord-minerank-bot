@@ -31,7 +31,7 @@ export default {
         let user_hash = interaction_nn.options.get("id")?.value?.toString() || "";
 
         if (user_hash.startsWith("id_")) {
-            safeReply(interaction_nn, "🚫 Invalid id", true);
+            safeReply(interaction_nn, "❌ Invalid id", true);
             return;
         }
 
@@ -41,7 +41,7 @@ export default {
             info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
             if (err || !nickname) {
                 error(err);
-                safeReply(interaction_nn, "🚫 Invalid id", true);
+                safeReply(interaction_nn, "❌ Invalid id", true);
                 return;
             }
 
@@ -50,7 +50,7 @@ export default {
             try {
                 updateUserRank(user.client, user.id, calculareRank(results[0].chat_activity, results[0].game_activity));
             } catch (err) {
-                safeReply(interaction_nn, `🚫 Insufficient permissions: ${err}`, true);
+                safeReply(interaction_nn, `❌ Insufficient permissions: ${err}`, true);
             }
             
         });
