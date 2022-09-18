@@ -1,10 +1,6 @@
-import { Client, GuildMember, OAuth2Guild, Role, Snowflake } from "discord.js";
-import { colors, error, getBaseLog, hsvToRgb, info, wrap } from "discord_bots_common";
+import { Client, GuildMember, Role, Snowflake } from "discord.js";
+import { colors, error, getBaseLog, guildToString, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
-
-function guildToString(guild: [Snowflake, OAuth2Guild]): string {
-    return `${guild[0]} (${wrap(guild[1], colors.LIGHT_YELLOW)})`;
-}
 
 export function calculareRank(chat_activity: number, game_activity: number) {
     return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
@@ -53,7 +49,7 @@ async function updateGuildMemberRank(member: GuildMember, role: Role) {
             info(`${wrap("📤 Removed", colors.LIGHT_RED)} role ${previous_role.name} from user ${wrap(member.user.tag, colors.LIGHT_RED)}`);
             member.roles.remove(previous_role);
         }
-        info(`${wrap("📥 added", colors.LIGHT_GREEN)} role ${wrap(role.name, colors.GREEN)} to user ${wrap(member.user.tag, colors.BLUE)}`);
+        info(`${wrap("📥 Added", colors.LIGHT_GREEN)} role ${wrap(role.name, colors.GREEN)} to user ${wrap(member.user.tag, colors.BLUE)}`);
         // add the new role
         member.roles.add(role);
     }
@@ -64,7 +60,7 @@ export function updateAllRanks(client: Client) {
     dbConnection.query(getAllQuery, async function (err, results) {
 
         if (err) {
-            error(`${err.message}: ${err.message}`);
+            error(err);
             return;
         }
 

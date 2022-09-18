@@ -37,14 +37,14 @@ export default {
                     return;
                 }
 
-                if(results) {
+                if(results.length) {
                     let message = "🖇 Associated minecraft nicknames:";
                     for(const result of results) {
                         message += ` ${result.nickname}`;
                     }
                     safeReply(interaction_nn, message, true);
                 } else {
-                    safeReply(interaction_nn, "🚫 No associated minecraft nickanmes", true);
+                    safeReply(interaction_nn, "🚫 No associated minecraft nicknames", true);
                 }
 
             });
