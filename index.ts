@@ -81,8 +81,6 @@ client.on("ready", () => {
         info(`🟩 Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
 
-    updateAllClans(client);
-
     // every 10 minutes
     setInterval(async function () {
 
@@ -107,6 +105,8 @@ client.on("ready", () => {
 
         // update ranks
         updateAllRanks(client);
+        // update clans
+        await updateAllClans(client);
     }, parseInt(process.env.RANK_UPDATE_INTERVAL_MINUTES || "10") * 60 * 1000);
 });
 
