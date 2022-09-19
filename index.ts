@@ -2,12 +2,13 @@ import { Client, GatewayIntentBits } from "discord.js";
 
 import * as mysql from "mysql";
 import YAML from 'yaml'
-import { colors, dkrInit, error, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
+import { colors, dkrInit, error, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
 
 import dotenv from 'dotenv'; // evironment vars
 import fs from 'fs';
 import { updateAllRanks } from "./role_utils";
 import { getServerStatus } from "./status_utils";
+import { updateAllClans } from "./clan_utils";
 
 dotenv.config();
 
@@ -36,15 +37,22 @@ client.on("ready", () => {
     testEnvironmentVar(process.env.OWNERS, "OWNERS", false);
     testEnvironmentVar(process.env.LOOKUP_SERVER, "LOOKUP_SERVER", false);
     testEnvironmentVar(process.env.RANK_UPDATE_INTERVAL_MINUTES, "RANK_UPDATE_INTERVAL_MINUTES", false);
+    testEnvironmentVar(process.env.RANK_PLUGIN_CONFIG_PATH, "RANK_PLUGIN_CONFIG_PATH", true);
+    testEnvironmentVar(process.env.CLAN_PLUGIN_CONFIG_PATH, "CLAN_PLUGIN_CONFIG_PATH", false);
 
     dkrInit(client, __dirname);
 
-    if (!fs.existsSync(process.env.CONFIG_PATH || "")) {
-        error(`invalid config path!`);
+    if (!fs.existsSync(process.env.RANK_PLUGIN_CONFIG_PATH!)) {
+        error(`invalid rank plugin config path!`);
         process.exit(1);
     }
 
-    const data = YAML.parse(fs.readFileSync(process.env.CONFIG_PATH!).toString());
+    if (!fs.existsSync(process.env.CLAN_PLUGIN_CONFIG_PATH || "")) {
+        error(`invalid clan plugin config path!`);
+        process.exit(1);
+    }
+
+    const data = YAML.parse(fs.readFileSync(process.env.RANK_PLUGIN_CONFIG_PATH!).toString());
     chatActivityRatio = data.chatActivityRatio || 0;
     gameActivityRatio = data.gameActivityRatio || 0;
 
@@ -73,6 +81,8 @@ client.on("ready", () => {
         info(`🟩 Connected to the MySQL db ${wrap(data.db.dbName, colors.LIGHTER_BLUE)} on ${wrap(data.db.host, colors.LIGHT_GREEN)}`);
     });
 
+    updateAllClans(client);
+
     // every 10 minutes
     setInterval(async function () {
 
@@ -88,6 +98,12 @@ client.on("ready", () => {
                 }]
             });
         }      
+
+        const guilds = await client.guilds.fetch();
+        info(`\n🪧 Currently serving ${guilds.size} guilds: `);
+        for (let guild of guilds) {
+            info(guildToString(guild));
+        }
 
         // update ranks
         updateAllRanks(client);

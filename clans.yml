@@ -1,0 +1,88 @@
+clans:
+  data:
+    43093309-b7cc-38bd-9694-391bae548688:
+      clanOwner: 43093309-b7cc-38bd-9694-391bae548688
+      clanFinalName: Stash
+      clanPrefix: Stash
+      clanMembers:
+      - b3bd6af0-1ef6-3e35-9456-55460765757c
+      - a3d60693-b434-3568-9b74-b268ef3772cd
+      - a76379e1-73f3-322a-8f79-c97825ea82e6
+      - ed9b4e8d-6053-3e1f-940d-62c651201f9e
+      - 9e6a4945-bb06-3fb5-850a-f043ab67cfaf
+      - e044259d-ef51-3858-8a4c-4e0ffe3c07db
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true
+      clanHome:
+        worldName: world
+        x: -1001351.8343512495
+        y: 65.0
+        z: -112508.96780286836
+        yaw: -89.15881
+        pitch: 8.445374
+    cb353dde-2d52-3d2f-a3e8-a536a0137669:
+      clanOwner: cb353dde-2d52-3d2f-a3e8-a536a0137669
+      clanFinalName: КПСМ
+      clanPrefix: КПСМ
+      clanMembers:
+      - fcdd3690-d43a-3a77-99be-91ce331e95d3
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true
+    0074e38b-e985-3c42-95ac-0ae5fea3180d:
+      clanOwner: 0074e38b-e985-3c42-95ac-0ae5fea3180d
+      clanFinalName: SLS
+      clanPrefix: SLS
+      clanMembers: []
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: false
+    ce7ea609-4e6c-3ce8-aab8-d7f486495930:
+      clanOwner: ce7ea609-4e6c-3ce8-aab8-d7f486495930
+      clanFinalName: GriefClan
+      clanPrefix: GriefClan
+      clanMembers:
+      - 01dfbd48-3b8e-37b4-b8af-e9e0c2c6c1e2
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true
+      clanHome:
+        worldName: world
+        x: -2664.854083876319
+        y: 104.0
+        z: -421.95829108948476
+        yaw: -2.5472412
+        pitch: 4.9499855
+    eecabf69-fc5b-3e44-b2c0-cad4ce211f77:
+      clanOwner: eecabf69-fc5b-3e44-b2c0-cad4ce211f77
+      clanFinalName: bambooleaf
+      clanPrefix: bambooleaf
+      clanMembers: []
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true
+      clanHome:
+        worldName: world
+        x: -111.65727383464268
+        y: 63.0
+        z: 5736.743158364462
+        yaw: -46.350246
+        pitch: 13.199983
+    76407e93-df41-3ec8-9737-04cdc56528ea:
+      clanOwner: 76407e93-df41-3ec8-9737-04cdc56528ea
+      clanFinalName: kunilove
+      clanPrefix: kunilove
+      clanMembers:
+      - fb467fc2-bf46-301f-9100-129a47d96d37
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true
+    bbe63601-5e7b-3a96-b086-c38bb9a8f994:
+      clanOwner: bbe63601-5e7b-3a96-b086-c38bb9a8f994
+      clanFinalName: SHADOWS
+      clanPrefix: SHADOWS
+      clanMembers: []
+      clanAllies: []
+      clanEnemies: []
+      friendlyFire: true

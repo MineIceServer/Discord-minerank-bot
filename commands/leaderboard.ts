@@ -19,7 +19,7 @@ export default {
 
     callback: async ({ interaction, guild }) => {
 
-        interaction?.deferReply();
+        await interaction?.deferReply();
 
         dbConnection.query(getAllQuery,
             async function (err, results) {
@@ -52,7 +52,8 @@ export default {
                     rank_map.set(rank, nickname);
                 }
 
-                const rank_map_sorted = new Map([...rank_map.entries()].sort((a, b) => b[0] - a[0]));
+                const rank_map_sorted = new Map([...rank_map.entries()]
+                .sort((a, b) => (isNaN(b[0]) ? 10000 : b[0]) - (isNaN(a[0]) ? 10000 : a[0])));
 
                 let actual_users = 0;
                 for (let entry of rank_map_sorted.entries()) {
@@ -68,7 +69,7 @@ export default {
                 }
                 embed.setDescription(`${actual_users} users 👤`);
 
-                safeReply(interaction!, embed);
+                await safeReply(interaction!, embed);
 
             });
 

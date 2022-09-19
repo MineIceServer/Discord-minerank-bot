@@ -1,4 +1,4 @@
-import { Client, GuildMember, Role, Snowflake } from "discord.js";
+import { Client, ColorResolvable, Guild, GuildMember, Role, Snowflake } from "discord.js";
 import { colors, error, getBaseLog, guildToString, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
 
@@ -6,43 +6,57 @@ export function calculareRank(chat_activity: number, game_activity: number) {
     return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
 }
 
-export async function updateUserRank(client: Client, userId: Snowflake, rank: number) {
-    let guilds = await client.guilds.fetch();
-    let rank_str = `Rank ${rank}`;
+export async function getAllGuilds(client: Client) {
+    let guilds: Guild[] = [];
+    let guilds_async = await client.guilds.fetch();
 
-    info(`🛠 Updating user: ${wrap(userId, colors.BLUE)}, in ${wrap(guilds.size, colors.GREEN)} guilds`);
+    for (let guild of guilds_async) {
+        guilds.push(await guild[1].fetch());
+    }
+
+    return guilds;
+}
+
+export async function createRoleIfNotExists(guild: Guild, name: string, color: ColorResolvable) {
+    let role = guild.roles.cache.find(role => role.name === name);
+    if (!role) {
+        info(`🔨 Created role: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
+        role = await guild.roles.create({
+            name: name,
+            color: color
+        });
+    }
+    return role;
+}
+
+export async function tryToGetMember(guild: Guild, memberId: Snowflake) {
+    try {
+        return await guild.members.fetch(memberId);
+    } catch (err) {
+        info(`🚫 User ${wrap(memberId, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
+        return undefined;
+    }
+}
+
+export async function updateUserRank(client: Client, userId: Snowflake, rank: number) {
+    let guilds = await getAllGuilds(client);
+
+    info(`🛠 Updating user: ${wrap(userId, colors.BLUE)}, in ${wrap(guilds.length, colors.GREEN)} guilds`);
 
     for (let guild of guilds) {
-        let guild_sync = await guild[1].fetch();
-        let member;
-        try{
-            member = await guild_sync.members.fetch(userId);
-        } catch (err) {
-            info(`🚫 User ${wrap(userId, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
-        }
-        
+        let member = await tryToGetMember(guild, userId);
 
         if(member) {
             info(`⚙️ Updating rank of user ${wrap(member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
 
-            let role = guild_sync.roles.cache.find(role => role.name === rank_str);
-            if (!role) {
-                info(`🔨 Created rank role: ${wrap(rank_str, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
-                role = await guild_sync.roles.create({
-                    name: `Rank ${rank}`,
-                    color: hsvToRgb((rank / 20.0) % 1, 0.7, 0.9)
-                });
-            }
-
-            await updateGuildMemberRank(member, role);
+            await swapRoles("Rank", member, 
+                await createRoleIfNotExists(guild, `Rank ${rank}`, hsvToRgb((rank / 20.0) % 1, 0.7, 0.9)));
         }
-       
     }
 }
 
-async function updateGuildMemberRank(member: GuildMember, role: Role) {
-
-    let previous_role = member.roles.cache.find(role => role.name.startsWith("Rank"));
+export async function swapRoles(prev_role_name: string, member: GuildMember, role: Role) {
+    let previous_role = member.roles.cache.find(role => role.name.startsWith(prev_role_name));
     if (previous_role != role) {
         //remove previous role
         if (previous_role) {
@@ -57,17 +71,12 @@ async function updateGuildMemberRank(member: GuildMember, role: Role) {
 
 export function updateAllRanks(client: Client) {
     info(`${wrap("🕓 Time to update all ranks", colors.LIGHT_PURPLE)}`);
+    
     dbConnection.query(getAllQuery, async function (err, results) {
 
         if (err) {
             error(err);
             return;
-        }
-
-        const guilds = await client.guilds.fetch();
-        info(`\n🪧 Currently serving ${guilds.size} guilds: `);
-        for (let guild of guilds) {
-            info(guildToString(guild));
         }
 
         for (let entry of results) {

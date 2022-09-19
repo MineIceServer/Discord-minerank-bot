@@ -4,7 +4,7 @@ import { dbConnection, tableName } from "..";
 import { error, safeReply } from "discord_bots_common";
 
 export default {
-    category: 'Ranking',
+    category: 'Administration',
     description: 'Display minecraft nicknames assiciated with a given user',
 
     slash: true,
