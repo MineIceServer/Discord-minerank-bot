@@ -68,8 +68,8 @@ export async function updateAllClans(client: Client) {
                         }) as CategoryChannel;
                     }
 
-                    createChannelIfNotExists(guild, {
-                        name: `Clan '${clanName}'`,
+                    await createChannelIfNotExists(guild, {
+                        name: `${clanName}-text`.toLowerCase(),
                         type: ChannelType.GuildText,
                         parent: category,
                         permissionOverwrites: [{
@@ -81,8 +81,8 @@ export async function updateAllClans(client: Client) {
                         }]
                     });
 
-                    createChannelIfNotExists(guild, {
-                        name: `Clan '${clanName}' voice`,
+                    await createChannelIfNotExists(guild, {
+                        name: `${clanName} Voice`,
                         type: ChannelType.GuildVoice,
                         parent: category,
                         permissionOverwrites: [{
