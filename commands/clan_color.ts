@@ -1,7 +1,7 @@
 import { ICommand } from "dkrcommands";
 import { colors, error, info, safeReply, wrap } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
-import { ApplicationCommandOptionType, ColorResolvable, Colors } from "discord.js";
+import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
 import fs from 'fs';
 import YAML from 'yaml'
 

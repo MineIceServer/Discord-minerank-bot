@@ -39,6 +39,7 @@ client.on("ready", () => {
     testEnvironmentVar(process.env.RANK_UPDATE_INTERVAL_MINUTES, "RANK_UPDATE_INTERVAL_MINUTES", false);
     testEnvironmentVar(process.env.RANK_PLUGIN_CONFIG_PATH, "RANK_PLUGIN_CONFIG_PATH", true);
     testEnvironmentVar(process.env.CLAN_PLUGIN_CONFIG_PATH, "CLAN_PLUGIN_CONFIG_PATH", false);
+    testEnvironmentVar(process.env.CLAN_CHANNELS_CATEGORY, "CLAN_CHANNELS_CATEGORY", false);
 
     dkrInit(client, __dirname);
 

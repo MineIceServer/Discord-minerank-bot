@@ -1,4 +1,4 @@
-import { Client, ColorResolvable, Guild, GuildChannelCreateOptions, GuildMember, Role, Snowflake } from "discord.js";
+import { ChannelType, Client, ColorResolvable, Guild, GuildChannelCreateOptions, GuildMember, Role, Snowflake } from "discord.js";
 import { colors, error, getBaseLog, guildToString, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
 
@@ -29,11 +29,12 @@ export async function createRoleIfNotExists(guild: Guild, name: string, color: C
     return role;
 }
 
-export async function createChannelIfNotExists(guild: Guild, options: GuildChannelCreateOptions) {
-    let channel = guild.channels.cache.find(channel => channel.name === options.name);
+export async function createChannelIfNotExists(guild: Guild, options: GuildChannelCreateOptions, is_category?: boolean) {
+    let channel = guild.channels.cache.find(channel => channel.name === options.name 
+        && (channel.type == ChannelType.GuildCategory || !is_category));
     if (!channel) {
         channel = await guild.channels.create(options);
-        info(`🔨 Created channel: ${wrap(options.name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
+        info(`🔨 Created ${is_category ? "category" : "channel"} channel: ${wrap(options.name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
     }
     return channel;
 }

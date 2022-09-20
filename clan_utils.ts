@@ -1,7 +1,7 @@
 import YAML from 'yaml'
 import fs from 'fs'
 import { colors, error, guildToString, info, wrap } from 'discord_bots_common';
-import { ChannelType, Client, GuildChannelCreateOptions } from 'discord.js';
+import { CategoryChannel, CategoryChannelResolvable, ChannelType, Client, GuildChannelCreateOptions } from 'discord.js';
 import { createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from './role_utils';
 import { dbConnection, tableName } from '.';
 
@@ -60,9 +60,18 @@ export async function updateAllClans(client: Client) {
                     const guild_member = await tryToGetMember(guild, user_discord_id);
                     const clan_role = await createRoleIfNotExists(guild, `Clan '${clanName}'`, 'Random');
 
-                    const text_channel_options: GuildChannelCreateOptions = {
+                    let category;
+                    if (process.env.CLAN_CHANNELS_CATEGORY) {
+                        category = await createChannelIfNotExists(guild, {
+                            name: process.env.CLAN_CHANNELS_CATEGORY,
+                            type: ChannelType.GuildCategory
+                        }) as CategoryChannel;
+                    }
+
+                    createChannelIfNotExists(guild, {
                         name: `Clan '${clanName}'`,
                         type: ChannelType.GuildText,
+                        parent: category,
                         permissionOverwrites: [{
                             id: guild.roles.everyone,
                             deny: ['ViewChannel']
@@ -70,13 +79,20 @@ export async function updateAllClans(client: Client) {
                             id: clan_role,
                             allow: ['ViewChannel']
                         }]
-                    }
-                    let voice_channel_options = text_channel_options;
-                    voice_channel_options.name = `Clan '${clanName}' voice`;
-                    voice_channel_options.type = ChannelType.GuildVoice;
+                    });
 
-                    createChannelIfNotExists(guild, text_channel_options);
-                    createChannelIfNotExists(guild, voice_channel_options);
+                    createChannelIfNotExists(guild, {
+                        name: `Clan '${clanName}' voice`,
+                        type: ChannelType.GuildVoice,
+                        parent: category,
+                        permissionOverwrites: [{
+                            id: guild.roles.everyone,
+                            deny: ['ViewChannel']
+                        }, {
+                            id: clan_role,
+                            allow: ['ViewChannel']
+                        }]
+                    });
 
                     if (guild_member) {
                         info(`⚙️ Updating clan of user ${wrap(guild_member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
