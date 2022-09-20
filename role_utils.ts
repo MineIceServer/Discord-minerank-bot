@@ -20,11 +20,11 @@ export async function getAllGuilds(client: Client) {
 export async function createRoleIfNotExists(guild: Guild, name: string, color: ColorResolvable) {
     let role = guild.roles.cache.find(role => role.name === name);
     if (!role) {
-        info(`🔨 Created role: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
         role = await guild.roles.create({
             name: name,
             color: color
         });
+        info(`🔨 Created role: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
     }
     return role;
 }
@@ -32,8 +32,8 @@ export async function createRoleIfNotExists(guild: Guild, name: string, color: C
 export async function createChannelIfNotExists(guild: Guild, options: GuildChannelCreateOptions) {
     let channel = guild.channels.cache.find(channel => channel.name === options.name);
     if (!channel) {
-        info(`🔨 Created channel: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
         channel = await guild.channels.create(options);
+        info(`🔨 Created channel: ${wrap(options.name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
     }
     return channel;
 }
