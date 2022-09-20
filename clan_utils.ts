@@ -1,8 +1,8 @@
 import YAML from 'yaml'
 import fs from 'fs'
 import { colors, error, guildToString, info, wrap } from 'discord_bots_common';
-import { Client } from 'discord.js';
-import { createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from './role_utils';
+import { ChannelType, Client, GuildChannelCreateOptions } from 'discord.js';
+import { createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from './role_utils';
 import { dbConnection, tableName } from '.';
 
 export async function updateAllClans(client: Client) {
@@ -58,12 +58,29 @@ export async function updateAllClans(client: Client) {
                 for (let guild of guilds) {
 
                     const guild_member = await tryToGetMember(guild, user_discord_id);
+                    const clan_role = await createRoleIfNotExists(guild, `Clan '${clanName}'`, 'Random');
+
+                    const text_channel_options: GuildChannelCreateOptions = {
+                        name: `Clan '${clanName}'`,
+                        type: ChannelType.GuildText,
+                        permissionOverwrites: [{
+                            id: guild.roles.everyone,
+                            deny: ['ViewChannel']
+                        }, {
+                            id: clan_role,
+                            allow: ['ViewChannel']
+                        }]
+                    }
+                    let voice_channel_options = text_channel_options;
+                    voice_channel_options.name = `Clan '${clanName}' voice`;
+                    voice_channel_options.type = ChannelType.GuildVoice;
+
+                    createChannelIfNotExists(guild, text_channel_options);
+                    createChannelIfNotExists(guild, voice_channel_options);
 
                     if (guild_member) {
                         info(`⚙️ Updating clan of user ${wrap(guild_member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
-
-                        await swapRoles('Clan', guild_member,
-                            await createRoleIfNotExists(guild, `Clan '${clanName}'`, 'Random'))
+                        await swapRoles('Clan', guild_member, clan_role);
                     }
                 }
             } else {
