@@ -1,6 +1,12 @@
-# Discord_mineice_bot
+# Discord_minerank_bot
 
-This is a basic discord bot allows to attach your discord account to a minecraft account and gives ranks according to game activity
+This is a basic discord bot allows to attach your discord account to a minecraft account.
+
+## Features
+  1. Gives ranks according to player's chat_activity and game_activity (written by a game plugin to a database)
+  2. Integrates with `ClansLite` plugin and syncs clans with discord, creates personal voice and text channel per clan
+  3. `leaderboard` and `clan_leaderboard` commands to view the leaderbords
+  4. `/status` command to see basic information about your minecraft server
 
 Example of a table:
 | nickname         | chat_activity | game_activity      | ds_id                                                            |
@@ -27,7 +33,16 @@ then the player uses this value in discord with the `/minecraft` command
 ### Required configuration
 `.env`
 ```ruby
-CONFIG_PATH=<yml config path>
+
+TEST_SERVERS=<server1>,<server2>,<server3>,...
+OWNERS=<owner1>,<owner2>,...
+
+RANK_UPDATE_INTERVAL_MINUTES=<update interval (default is every 10 minutes)>
+LOOKUP_SERVER=<your minecraft server address>
+
+RANK_PLUGIN_CONFIG_PATH=<RankSystem config path (config.yml)>
+CLAN_PLUGIN_CONFIG_PATH=<ClansLite config file path (clans.yml)>
+
 TOKEN=<discord bot token>
 ```
 
