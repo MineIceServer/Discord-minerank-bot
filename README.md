@@ -1,6 +1,6 @@
 # Discord_minerank_bot
 
-This is a basic discord bot allows to attach your discord account to a minecraft account.
+This is a basic discord bot that attaches your discord account to a minecraft account.
 
 ## Features
   1. Gives ranks according to player's chat_activity and game_activity (written by a game plugin to a database)
