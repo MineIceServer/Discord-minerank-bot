@@ -1,12 +1,9 @@
 import { ICommand } from "dkrcommands";
-import { colors, error, info, safeReply, wrap } from "discord_bots_common";
+import { error, safeReply } from "discord_bots_common";
 import { dbConnection, getAllQuery } from "..";
-import { calculareRank } from "../role_utils";
-import { EmbedBuilder, Guild } from "discord.js";
-
-function guildToString(guild: Guild | null): string {
-    return `${guild?.id} (${wrap(guild?.name, colors.LIGHT_YELLOW)})`;
-}
+import { calculareRank, tryToGetMember } from "../role_utils";
+import { EmbedBuilder } from "discord.js";
+import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
 
 export default {
     category: 'Ranking',
@@ -37,39 +34,12 @@ export default {
                 let rank_map = new Map<number, string>();
 
                 for(let entry of results) {
-                    const rank = calculareRank(entry.chat_activity, entry.game_activity);
-                    let nickname;
-                    try {
-                        nickname = (await guild?.members.fetch(entry.ds_id.slice(3)))?.user.tag || "";
-                    } catch (err) {
-                        info(`🚫 User ${wrap(entry.ds_id, colors.LIGHT_GREEN)} ${wrap("not present", colors.LIGHT_RED)} in ${guildToString(guild)}`);
-                        continue;
-                    }
-                    if (rank_map.has(rank)) {
-                        rank_map.set(rank, `${rank_map.get(rank)}, ${nickname}`);
-                        continue;
-                    }
-                    rank_map.set(rank, nickname);
+                    setOrAppendToRankMap(rank_map, 
+                        calculareRank(entry.chat_activity, entry.game_activity), 
+                        (await tryToGetMember(guild!, entry.ds_id.slice(3)))?.nickname || "");
                 }
 
-                const rank_map_sorted = new Map([...rank_map.entries()]
-                .sort((a, b) => (isNaN(b[0]) ? 10000 : b[0]) - (isNaN(a[0]) ? 10000 : a[0])));
-
-                let actual_users = 0;
-                for (let entry of rank_map_sorted.entries()) {
-                    if(entry[1]) {
-                        embed.addFields([
-                            {
-                                name: `Rank ${entry[0]}`,
-                                value: entry[1]
-                            }
-                        ]);
-                        actual_users ++;
-                    }
-                }
-                embed.setDescription(`${actual_users} users 👤`);
-
-                await safeReply(interaction!, embed);
+                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, true));
 
             });
 

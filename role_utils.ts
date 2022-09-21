@@ -1,4 +1,4 @@
-import { Client, ColorResolvable, Guild, GuildMember, Role, Snowflake } from "discord.js";
+import { ChannelType, Client, ColorResolvable, Guild, GuildChannelCreateOptions, GuildMember, Role, Snowflake } from "discord.js";
 import { colors, error, getBaseLog, guildToString, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
 
@@ -20,13 +20,23 @@ export async function getAllGuilds(client: Client) {
 export async function createRoleIfNotExists(guild: Guild, name: string, color: ColorResolvable) {
     let role = guild.roles.cache.find(role => role.name === name);
     if (!role) {
-        info(`🔨 Created role: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
         role = await guild.roles.create({
             name: name,
             color: color
         });
+        info(`🔨 Created role: ${wrap(name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
     }
     return role;
+}
+
+export async function createChannelIfNotExists(guild: Guild, options: GuildChannelCreateOptions, is_category?: boolean) {
+    let channel = guild.channels.cache.find(channel => channel.name === options.name 
+        && (channel.type == ChannelType.GuildCategory || !is_category));
+    if (!channel) {
+        channel = await guild.channels.create(options);
+        info(`🔨 Created ${is_category ? "category" : "channel"} channel: ${wrap(options.name, colors.LIGHTER_BLUE)} in ${guildToString(guild)}`);
+    }
+    return channel;
 }
 
 export async function tryToGetMember(guild: Guild, memberId: Snowflake) {
