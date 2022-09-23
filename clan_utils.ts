@@ -27,8 +27,7 @@ export async function updateAllClans(client: Client) {
         return;
     }
 
-    let registeredUsers = new Map<string, string>();
-    let allUsers = new Map<string, string>();
+    let discord_attached_users = new Map<string, string[]>();
     dbConnection.query(`select * from ${tableName}`,
         async function (err, results) {
 
@@ -39,13 +38,62 @@ export async function updateAllClans(client: Client) {
 
             for (const result of results) {
                 if (result.ds_id) {
-                    registeredUsers.set(result.uuid, result.ds_id.slice(3));
+                    if (discord_attached_users.has(result.ds_id)) {
+                        discord_attached_users.get(result.ds_id.slice(3))!.push(result.uuid);
+                    } else {
+                        discord_attached_users.set(result.ds_id, result.ds_id.slice(3));
+                    }
+                } else {
+                    info(`🟨 Minecraft user ${wrap(result.nickname, colors.CYAN)} doesn't have a connected discord account`);   
                 }
-                allUsers.set(result.uuid, result.nickname);
             }
         });
 
     let guilds = await getAllGuilds(client);
+
+    // create channels and roles for clans
+    for (const clan_id in clans) {
+
+        const clan_data = getClanInfo(clans, clan_id);
+
+        for (let guild of guilds) {
+            const clan_role = await createRoleIfNotExists(guild, `Clan '${clan_data.clanName}'`, 'Random');
+
+            let category;
+            if (process.env.CLAN_CHANNELS_CATEGORY) {
+                category = await createChannelIfNotExists(guild, {
+                    name: process.env.CLAN_CHANNELS_CATEGORY,
+                    type: ChannelType.GuildCategory
+                }) as CategoryChannel;
+            }
+
+            await createChannelIfNotExists(guild, {
+                name: `${clan_data.clanName}-text`.toLowerCase(),
+                type: ChannelType.GuildText,
+                parent: category,
+                permissionOverwrites: [{
+                    id: guild.roles.everyone,
+                    deny: ['ViewChannel']
+                }, {
+                    id: clan_role,
+                    allow: ['ViewChannel']
+                }]
+            });
+
+            await createChannelIfNotExists(guild, {
+                name: `${clan_data.clanName} Voice`,
+                type: ChannelType.GuildVoice,
+                parent: category,
+                permissionOverwrites: [{
+                    id: guild.roles.everyone,
+                    deny: ['ViewChannel']
+                }, {
+                    id: clan_role,
+                    allow: ['ViewChannel']
+                }]
+            });
+        }
+    }
 
     for (const clan_id in clans) {
         const clan_data = getClanInfo(clans, clan_id);
@@ -64,40 +112,6 @@ export async function updateAllClans(client: Client) {
 
                     const guild_member = await tryToGetMember(guild, user_discord_id);
                     const clan_role = await createRoleIfNotExists(guild, `Clan '${clan_data.clanName}'`, 'Random');
-
-                    let category;
-                    if (process.env.CLAN_CHANNELS_CATEGORY) {
-                        category = await createChannelIfNotExists(guild, {
-                            name: process.env.CLAN_CHANNELS_CATEGORY,
-                            type: ChannelType.GuildCategory
-                        }) as CategoryChannel;
-                    }
-
-                    await createChannelIfNotExists(guild, {
-                        name: `${clan_data.clanName}-text`.toLowerCase(),
-                        type: ChannelType.GuildText,
-                        parent: category,
-                        permissionOverwrites: [{
-                            id: guild.roles.everyone,
-                            deny: ['ViewChannel']
-                        }, {
-                            id: clan_role,
-                            allow: ['ViewChannel']
-                        }]
-                    });
-
-                    await createChannelIfNotExists(guild, {
-                        name: `${clan_data.clanName} Voice`,
-                        type: ChannelType.GuildVoice,
-                        parent: category,
-                        permissionOverwrites: [{
-                            id: guild.roles.everyone,
-                            deny: ['ViewChannel']
-                        }, {
-                            id: clan_role,
-                            allow: ['ViewChannel']
-                        }]
-                    });
 
                     if (guild_member) {
                         info(`⚙️ Updating clan of user ${wrap(guild_member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
