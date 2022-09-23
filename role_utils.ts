@@ -65,7 +65,9 @@ export async function updateUserRank(client: Client, userId: Snowflake, rank: nu
     }
 }
 
-export async function swapRoles(prev_role_name: string, member: GuildMember, ...new_roles: Role[]) {
+export async function swapRoles(prev_role_name: string, member: GuildMember, new_roles: Role | Role[]) {
+    new_roles = ([] as Role[]).concat(new_roles);
+
     // find all roles that start with prev_role_name (filter not matched(undefined) values)
     let previous_roles = member.roles.cache.map(element => element.name.startsWith(prev_role_name) ? element : undefined).filter(element => element);
     for (const previous_role of previous_roles) {
@@ -107,7 +109,7 @@ export function updateAllRanks(client: Client) {
                 }
                 
             } else {
-                info(`🟨 Found unconfirmed user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick: ${wrap(entry.nickname, colors.LIGHT_GREEN)},\
+                info(`🟨 Found unconfirmed user: ${wrap(entry.ds_id, colors.BLUE)}, minecraft nick(s): ${wrap(entry.nickname, colors.LIGHT_GREEN)},\
  rank: ${wrap(rank, colors.GREEN)}, ${wrap("skipping", colors.LIGHT_RED)}`);
             }
         }
