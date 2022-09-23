@@ -65,17 +65,22 @@ export async function updateUserRank(client: Client, userId: Snowflake, rank: nu
     }
 }
 
-export async function swapRoles(prev_role_name: string, member: GuildMember, role: Role) {
-    let previous_role = member.roles.cache.find(role => role.name.startsWith(prev_role_name));
-    if (previous_role != role) {
-        //remove previous role
-        if (previous_role) {
-            info(`${wrap("📤 Removed", colors.LIGHT_RED)} role ${previous_role.name} from user ${wrap(member.user.tag, colors.LIGHT_RED)}`);
+export async function swapRoles(prev_role_name: string, member: GuildMember, ...new_roles: Role[]) {
+    // find all roles that start with prev_role_name (filter not matched(undefined) values)
+    let previous_roles = member.roles.cache.map(element => element.name.startsWith(prev_role_name) ? element : undefined).filter(element => element);
+    for (const previous_role of previous_roles) {
+        //remove previous role if not present in new_roles
+        if (previous_role && !new_roles.includes(previous_role)) {
             member.roles.remove(previous_role);
+            info(`${wrap("📤 Removed", colors.LIGHT_RED)} role ${previous_role.name} from user ${wrap(member.user.tag, colors.LIGHT_RED)}`);
         }
-        info(`${wrap("📥 Added", colors.LIGHT_GREEN)} role ${wrap(role.name, colors.GREEN)} to user ${wrap(member.user.tag, colors.BLUE)}`);
-        // add the new role
-        member.roles.add(role);
+    }
+    for (const new_role of new_roles) {
+        // add the new role if not present in old_roles
+        if (!previous_roles.includes(new_role)) {
+            info(`${wrap("📥 Added", colors.LIGHT_GREEN)} role ${wrap(new_role.name, colors.GREEN)} to user ${wrap(member.user.tag, colors.BLUE)}`);
+            member.roles.add(new_role);
+        }
     }
 }
 
