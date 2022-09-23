@@ -1,16 +1,12 @@
 import { ICommand } from "dkrcommands";
-import { colors, error, safeReply, wrap } from "discord_bots_common";
+import { error, safeReply } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
 import { calculareRank } from "../role_utils";
-import { EmbedBuilder, Guild } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import fs from 'fs';
 import YAML from 'yaml'
 import { getClanInfo } from "../clan_utils";
 import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
-
-function guildToString(guild: Guild | null): string {
-    return `${guild?.id} (${wrap(guild?.name, colors.LIGHT_YELLOW)})`;
-}
 
 export default {
     category: 'Ranking',

@@ -1,6 +1,6 @@
 {
   "name": "mineice_bot",
-  "version": "1.0.1-1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "GPLV3",
   "dependencies": {
     "discord_bots_common": "github:dgudim/Discord_bots-common",
-    "discord.js": "^14.3.0",
+    "discord.js": "^14.4.0",
     "dkrcommands": "^1.0.0-beta.2",
     "dotenv": "^16.0.2",
     "minecraft-server-util": "^5.3.1",
