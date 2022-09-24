@@ -36,7 +36,7 @@ export default {
                 for(let entry of results) {
                     setOrAppendToRankMap(rank_map, 
                         calculareRank(entry.chat_activity, entry.game_activity), 
-                        (await tryToGetMember(guild!, entry.ds_id.slice(3)))?.nickname || "");
+                        (await tryToGetMember(guild!, entry.ds_id.slice(3)))?.user.tag || "");
                 }
 
                 await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, true));
