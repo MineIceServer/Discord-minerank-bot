@@ -70,7 +70,7 @@ export default {
                         `${clan_data.clanName} (${clan_data.clan_members.length})`);
                 }
 
-                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, false, total_users));
+                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, total_users));
 
             });
 

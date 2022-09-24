@@ -32,14 +32,15 @@ export default {
                 embed.setTitle(`🏆 Leaderboard`);
 
                 let rank_map = new Map<number, string>();
+                let total_members = 0;
 
                 for(let entry of results) {
-                    setOrAppendToRankMap(rank_map, 
+                    total_members += setOrAppendToRankMap(rank_map, 
                         calculareRank(entry.chat_activity, entry.game_activity), 
                         (await tryToGetMember(guild!, entry.ds_id.slice(3)))?.user.tag || "");
                 }
 
-                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, true));
+                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, total_members));
 
             });
 
