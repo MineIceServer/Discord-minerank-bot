@@ -33,13 +33,13 @@ const client = new Client({
 
 client.on("ready", () => {
 
-    testEnvironmentVar(process.env.TEST_SERVERS, "TEST_SERVERS", true);
-    testEnvironmentVar(process.env.OWNERS, "OWNERS", false);
-    testEnvironmentVar(process.env.LOOKUP_SERVER, "LOOKUP_SERVER", false);
-    testEnvironmentVar(process.env.RANK_UPDATE_INTERVAL_MINUTES, "RANK_UPDATE_INTERVAL_MINUTES", false);
-    testEnvironmentVar(process.env.RANK_PLUGIN_CONFIG_PATH, "RANK_PLUGIN_CONFIG_PATH", true);
-    testEnvironmentVar(process.env.CLAN_PLUGIN_CONFIG_PATH, "CLAN_PLUGIN_CONFIG_PATH", false);
-    testEnvironmentVar(process.env.CLAN_CHANNELS_CATEGORY, "CLAN_CHANNELS_CATEGORY", false);
+    testEnvironmentVar("TEST_SERVERS", true);
+    testEnvironmentVar("OWNERS", false);
+    testEnvironmentVar("LOOKUP_SERVER", false);
+    testEnvironmentVar("RANK_UPDATE_INTERVAL_MINUTES", false);
+    testEnvironmentVar("RANK_PLUGIN_CONFIG_PATH", true);
+    testEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH", false);
+    testEnvironmentVar("CLAN_CHANNELS_CATEGORY", false);
 
     dkrInit(client, __dirname);
 
