@@ -4,6 +4,7 @@ import { colors, error, guildToString, info, wrap } from 'discord_bots_common';
 import { CategoryChannel, ChannelType, Client, Role } from 'discord.js';
 import { createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from './role_utils';
 import { dbConnection, tableName } from '.';
+import { setOrAppendToMap } from './utis';
 
 export function getClanInfo(clans: any, clan_id: string): { clanName: string, clan_members: string[] } {
     let clan_members: string[] = [];
@@ -27,7 +28,7 @@ export async function updateAllClans(client: Client) {
         return;
     }
 
-    let discord_attached_users = new Map<string, string[]>();
+    let discord_id_to_nicknames = new Map<string, string[]>();
     let uuid_to_nickname = new Map<string, string>();
 
     dbConnection.query(`select * from ${tableName} where ds_id is not null`,
@@ -40,11 +41,7 @@ export async function updateAllClans(client: Client) {
 
             for (const result of results) {
                 uuid_to_nickname.set(result.uuid, result.nickname);
-                if (discord_attached_users.has(result.ds_id)) {
-                    discord_attached_users.get(result.ds_id.slice(3))!.push(result.nickname);
-                } else {
-                    discord_attached_users.set(result.ds_id.slice(3), result.nickname);
-                }
+                setOrAppendToMap(discord_id_to_nicknames, result.ds_id.slice(3), result.nickname);
             }
         });
 
@@ -111,7 +108,7 @@ export async function updateAllClans(client: Client) {
         }
     }
 
-    for (const [discord_user_id, minecraft_nicknames] of discord_attached_users) {
+    for (const [discord_user_id, minecraft_nicknames] of discord_id_to_nicknames) {
         info(`🛠 Updating user: ${wrap(discord_user_id, colors.BLUE)} (minecraft: ${wrap(minecraft_nicknames, colors.LIGHT_GREEN)}) in ${wrap(guilds.length, colors.GREEN)} guilds`);
         
         let clan_names: string[] = [];

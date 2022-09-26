@@ -18,6 +18,14 @@ export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<numbe
     return embed;
 }
 
+export function setOrAppendToMap(map: Map<string, string[]>, key: string, value: string) {
+    if (map.has(key)) {
+        map.get(key)!.push(value);
+    } else {
+        map.set(key, [value]);
+    }
+}
+
 export function setOrAppendToRankMap(rank_map: Map<number, string>, rank: number, data: string): number {
     if(data) {
         if (rank_map.has(rank)) {
