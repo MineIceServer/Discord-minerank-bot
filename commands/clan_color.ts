@@ -2,12 +2,12 @@ import { ICommand } from "dkrcommands";
 import { colors, error, info, safeReply, wrap } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
-import fs from 'fs';
-import YAML from 'yaml'
+import fs from "fs";
+import YAML from "yaml";
 
 export default {
-    category: 'Clans',
-    description: 'Set your clan color',
+    category: "Clans",
+    description: "Set your clan color",
 
     slash: true,
     testOnly: true,
@@ -16,14 +16,14 @@ export default {
 
     options: [
         {
-            name: 'color',
-            description: 'New color (hex or name)',
+            name: "color",
+            description: "New color (hex or name)",
             required: true,
             type: ApplicationCommandOptionType.String
         },
         {
-            name: 'clan',
-            description: 'Your clan',
+            name: "clan",
+            description: "Your clan",
             required: true,
             type: ApplicationCommandOptionType.Role
         }
@@ -31,9 +31,9 @@ export default {
 
     callback: async ({ interaction, user, guild }) => {
 
-        let interaction_nn = interaction!;
-        let new_color = interaction_nn.options.getString("color")!;
-        let clan_role = interaction_nn.options.getRole("clan")!;
+        const interaction_nn = interaction!;
+        const new_color = interaction_nn.options.getString("color")!;
+        const clan_role = interaction_nn.options.getRole("clan")!;
 
         if (!clan_role.name.startsWith("Clan")) {
             safeReply(interaction_nn, "🚫 That does not look like a clan, clan roles start with 'Clan'", true);
@@ -102,4 +102,4 @@ export default {
             });
 
     }
-} as ICommand
+} as ICommand;

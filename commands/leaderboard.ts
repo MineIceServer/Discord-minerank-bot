@@ -1,7 +1,7 @@
 import { ICommand } from "dkrcommands";
-import { error, safeReply } from "discord_bots_common";
+import { error, safeReply, tryToGetMember } from "discord_bots_common";
 import { dbConnection, getAllQuery } from "..";
-import { calculareRank, tryToGetMember } from "../role_utils";
+import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
 import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
 

@@ -27,7 +27,7 @@ export function setOrAppendToMap(map: Map<string, string[]>, key: string, value:
 }
 
 export function setOrAppendToRankMap(rank_map: Map<number, string>, rank: number, data: string): number {
-    if(data) {
+    if (data) {
         if (rank_map.has(rank)) {
             rank_map.set(rank, `${rank_map.get(rank)}, ${data}`);
         } else {

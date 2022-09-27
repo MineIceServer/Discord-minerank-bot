@@ -4,8 +4,8 @@ import { dbConnection, tableName } from "..";
 import { error, safeReply } from "discord_bots_common";
 
 export default {
-    category: 'Administration',
-    description: 'Display minecraft nicknames assiciated with a given user',
+    category: "Administration",
+    description: "Display minecraft nicknames assiciated with a given user",
 
     slash: true,
     testOnly: true,
@@ -14,8 +14,8 @@ export default {
 
     options: [
         {
-            name: 'member',
-            description: 'Server member',
+            name: "member",
+            description: "Server member",
             //descriptionLocalizations: {
             //    ru: "ID, который вы получили из майнкрафта"
             //},
@@ -26,7 +26,7 @@ export default {
 
     callback: async ({ interaction }) => {
 
-        let interaction_nn = interaction!;
+        const interaction_nn = interaction!;
 
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = 'id_${interaction_nn.options.getUser("member")?.id || ""}'`,
             function (err, results) {
@@ -37,9 +37,9 @@ export default {
                     return;
                 }
 
-                if(results.length) {
+                if (results.length) {
                     let message = "🖇 Associated minecraft nicknames:";
-                    for(const result of results) {
+                    for (const result of results) {
                         message += ` ${result.nickname}`;
                     }
                     safeReply(interaction_nn, message, true);
@@ -50,4 +50,4 @@ export default {
             });
 
     }
-} as ICommand
+} as ICommand;

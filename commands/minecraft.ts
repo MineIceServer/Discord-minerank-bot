@@ -5,8 +5,8 @@ import { calculareRank, updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
 
 export default {
-    category: 'Ranking',
-    description: 'Attach discord to minecraft nickname',
+    category: "Ranking",
+    description: "Attach discord to minecraft nickname",
 
     slash: true,
     testOnly: true,
@@ -15,8 +15,8 @@ export default {
     
     options: [
         {
-            name: 'id',
-            description: 'The id you got from minecraft',
+            name: "id",
+            description: "The id you got from minecraft",
             //descriptionLocalizations: {
             //    ru: "ID, который вы получили из майнкрафта"
             //},
@@ -27,8 +27,8 @@ export default {
 
     callback: async ({ interaction, user }) => {
 
-        let interaction_nn = interaction!;
-        let user_hash = interaction_nn.options.get("id")?.value?.toString() || "";
+        const interaction_nn = interaction!;
+        const user_hash = interaction_nn.options.get("id")?.value?.toString() || "";
 
         if (user_hash.startsWith("id_")) {
             safeReply(interaction_nn, "❌ Invalid id", true);
@@ -37,7 +37,7 @@ export default {
 
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`, 
         function (err, results) {
-            let nickname = results[0]?.nickname || '';
+            const nickname = results[0]?.nickname || "";
             info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
             if (err || !nickname) {
                 error(err);
@@ -56,4 +56,4 @@ export default {
         });
 
     }
-} as ICommand
+} as ICommand;

@@ -1,11 +1,11 @@
 import { Client, GatewayIntentBits } from "discord.js";
 
 import * as mysql from "mysql";
-import YAML from 'yaml'
+import YAML from "yaml";
 import { colors, dkrInit, error, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
 
-import dotenv from 'dotenv'; // evironment vars
-import fs from 'fs';
+import dotenv from "dotenv"; // evironment vars
+import fs from "fs";
 import { updateAllRanks } from "./role_utils";
 import { getServerStatus } from "./status_utils";
 import { updateAllClans } from "./clan_utils";
@@ -17,7 +17,7 @@ export let getAllQuery: string;
 export let chatActivityRatio: number;
 export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
-export let minecraftServerUrl = stripUrlScheme(process.env.LOOKUP_SERVER || "");
+export const minecraftServerUrl = stripUrlScheme(process.env.LOOKUP_SERVER || "");
 
 const client = new Client({
     rest: {
@@ -87,10 +87,10 @@ client.on("ready", () => {
 
         info(wrap("Updating presence", colors.PURPLE));
 
-        let status = await getServerStatus();
-        if(status) {
+        const status = await getServerStatus();
+        if (status) {
             client.user?.setPresence({
-                status: 'online',
+                status: "online",
                 activities: [{
                     name: `${status.motd.clean} - ${status.players.online}/${status.players.max} players online`,
                     url: `https://${minecraftServerUrl}`
@@ -100,7 +100,7 @@ client.on("ready", () => {
 
         const guilds = await client.guilds.fetch();
         info(`\n🪧 Currently serving ${guilds.size} guilds: `);
-        for (let guild of guilds) {
+        for (const guild of guilds) {
             info(guildToString(guild));
         }
 

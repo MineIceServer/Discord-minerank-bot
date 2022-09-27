@@ -1,19 +1,18 @@
-import YAML from 'yaml'
-import fs from 'fs'
-import { colors, error, guildToString, info, wrap } from 'discord_bots_common';
-import { CategoryChannel, ChannelType, Client, Role } from 'discord.js';
-import { createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from './role_utils';
-import { dbConnection, tableName } from '.';
-import { setOrAppendToMap } from './utis';
+import YAML from "yaml";
+import fs from "fs";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from "discord_bots_common";
+import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
+import { dbConnection, tableName } from ".";
+import { setOrAppendToMap } from "./utis";
 
 export function getClanInfo(clans: any, clan_id: string): { clanName: string, clan_members: string[] } {
-    let clan_members: string[] = [];
+    const clan_members: string[] = [];
     clan_members.push(clan_id);
     for (const clan_member of clans[clan_id].clanMembers) {
         clan_members.push(clan_member);
     }
     const clanName = clans[clan_id].clanFinalName;
-    return { clanName, clan_members }
+    return { clanName, clan_members };
 }
 
 export async function updateAllClans(client: Client) {
@@ -28,8 +27,8 @@ export async function updateAllClans(client: Client) {
         return;
     }
 
-    let discord_id_to_nicknames = new Map<string, string[]>();
-    let uuid_to_nickname = new Map<string, string>();
+    const discord_id_to_nicknames = new Map<string, string[]>();
+    const uuid_to_nickname = new Map<string, string>();
 
     dbConnection.query(`select * from ${tableName} where ds_id is not null`,
         async function (err, results) {
@@ -45,9 +44,9 @@ export async function updateAllClans(client: Client) {
             }
         });
 
-    let guilds = await getAllGuilds(client);
+    const guilds = await getAllGuilds(client);
 
-    let nickname_to_clan_name = new Map<string, string>();
+    const nickname_to_clan_name = new Map<string, string>();
 
     // create channels and roles for clans
     for (const clan_id in clans) {
@@ -68,8 +67,8 @@ export async function updateAllClans(client: Client) {
 
         // create clan if it has at least one member registered in discord
         if (create_clan) {
-            for (let guild of guilds) {
-                const clan_role = await createRoleIfNotExists(guild, `Clan '${clan_data.clanName}'`, 'Random');
+            for (const guild of guilds) {
+                const clan_role = await createRoleIfNotExists(guild, `Clan '${clan_data.clanName}'`, "Random");
 
                 let category;
                 if (process.env.CLAN_CHANNELS_CATEGORY) {
@@ -85,10 +84,10 @@ export async function updateAllClans(client: Client) {
                     parent: category,
                     permissionOverwrites: [{
                         id: guild.roles.everyone,
-                        deny: ['ViewChannel']
+                        deny: ["ViewChannel"]
                     }, {
                         id: clan_role,
-                        allow: ['ViewChannel']
+                        allow: ["ViewChannel"]
                     }]
                 });
 
@@ -98,10 +97,10 @@ export async function updateAllClans(client: Client) {
                     parent: category,
                     permissionOverwrites: [{
                         id: guild.roles.everyone,
-                        deny: ['ViewChannel']
+                        deny: ["ViewChannel"]
                     }, {
                         id: clan_role,
-                        allow: ['ViewChannel']
+                        allow: ["ViewChannel"]
                     }]
                 });
             }
@@ -111,7 +110,7 @@ export async function updateAllClans(client: Client) {
     for (const [discord_user_id, minecraft_nicknames] of discord_id_to_nicknames) {
         info(`🛠 Updating user: ${wrap(discord_user_id, colors.BLUE)} (minecraft: ${wrap(minecraft_nicknames, colors.LIGHT_GREEN)}) in ${wrap(guilds.length, colors.GREEN)} guilds`);
         
-        let clan_names: string[] = [];
+        const clan_names: string[] = [];
         for (const nickname of minecraft_nicknames) {
             const clan_name = nickname_to_clan_name.get(nickname);
             if (clan_name && !clan_names.includes(clan_name)) {
@@ -126,16 +125,16 @@ export async function updateAllClans(client: Client) {
 
         for (const guild of guilds) {
 
-            let clan_roles: Role[] = [];
+            const clan_roles: Role[] = [];
             
             for (const clan_name of clan_names) {
-                clan_roles.push(await createRoleIfNotExists(guild, `Clan '${clan_name}'`, 'Random'));
+                clan_roles.push(await createRoleIfNotExists(guild, `Clan '${clan_name}'`, "Random"));
             }
 
             const guild_member = await tryToGetMember(guild, discord_user_id);
             if (guild_member) {
                 info(`⚙️ Updating clan roles (${clan_names}) of user ${wrap(guild_member.user.tag, colors.LIGHT_GREEN)} in ${guildToString(guild)}`);
-                await swapRoles('Clan', guild_member, clan_roles);
+                await swapRoles("Clan", guild_member, clan_roles);
             }
         }
     }
