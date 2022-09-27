@@ -105,7 +105,7 @@ client.on("ready", () => {
         }
 
         // update ranks
-        updateAllRanks(client);
+        await updateAllRanks(client);
         // update clans
         await updateAllClans(client);
     }, parseInt(process.env.RANK_UPDATE_INTERVAL_MINUTES || "10") * 60 * 1000);

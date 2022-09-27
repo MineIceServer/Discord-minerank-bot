@@ -2,8 +2,21 @@ import { ChannelType, Client, ColorResolvable, Guild, GuildChannelCreateOptions,
 import { colors, error, getBaseLog, guildToString, hsvToRgb, info, wrap } from "discord_bots_common";
 import { chatActivityRatio, dbConnection, gameActivityRatio, getAllQuery } from ".";
 
+import Mee6LevelsApi from "mee6-levels-api";
+
 export function calculareRank(chat_activity: number, game_activity: number) {
     return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
+}
+
+export async function getAllMembers(guild: Guild) {
+    let members: GuildMember[] = [];
+    let members_async = await guild.members.fetch();
+
+    for (let member of members_async) {
+        members.push(await member[1].fetch());
+    }
+
+    return members;
 }
 
 export async function getAllGuilds(client: Client) {
@@ -86,9 +99,28 @@ export async function swapRoles(prev_role_name: string, member: GuildMember, new
     }
 }
 
-export function updateAllRanks(client: Client) {
+export async function updateAllRanks(client: Client) {
     info(`${wrap("🕓 Time to update all ranks", colors.LIGHT_PURPLE)}`);
     
+    let guilds = await getAllGuilds(client);
+
+    info(`🛠 Updating mee6 levels in ${wrap(guilds.length, colors.GREEN)} guilds`);
+
+    for (let guild of guilds) {
+        let members = await getAllMembers(guild);
+        info(`🛠 Updating user mee6 levels of ${wrap(members.length, colors.GREEN)} members in ${wrap(guild.name, colors.BLUE)}`);
+        try {
+            for (const member of members) {
+                const member_mee = await Mee6LevelsApi.getUserXp(guild, member);
+                info(`🛠 Updating user ${member.user.tag} (${member_mee?.level} | ${member_mee?.rank})`);
+                swapRoles("Level", member, await createRoleIfNotExists(guild, `Level ${member_mee?.level}`, hsvToRgb((member_mee?.level || 0 / 20.0) % 1, 0.3, 0.9)));
+            }
+        } catch (err) {
+            error(`${wrap(guild.name, colors.BLUE)} does not have a mee6 bot: ${err}`);
+        }
+
+    }
+
     dbConnection.query(getAllQuery, async function (err, results) {
 
         if (err) {
