@@ -4,13 +4,13 @@ import { dbConnection, tableName } from "..";
 import { error, safeReply } from "discord_bots_common";
 
 function getMinecraftNicknamesById(id: string) {
-    return new Promise<string>(resolve => {
+    return new Promise<{message: string, error?: boolean}>(resolve => {
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`,
             function (err, results) {
 
                 if (err) {
                     error(err);
-                    return resolve("❌ Sql error ocurred");
+                    return resolve({ message: "❌ Sql error ocurred", error: true });
                 }
 
                 if (results.length) {
@@ -18,9 +18,9 @@ function getMinecraftNicknamesById(id: string) {
                     for (const result of results) {
                         message += ` ${result.nickname}`;
                     }
-                    return resolve(message);
+                    return resolve({ message: message });
                 } else {
-                    return resolve("🚫 No associated minecraft nicknames");
+                    return resolve({ message: "🚫 No associated minecraft nicknames", error: true });
                 }
 
             });
@@ -52,18 +52,26 @@ export default {
 
         const mentionable = interaction!.options.getMentionable("member");
         if (mentionable instanceof User || mentionable instanceof GuildMember) {
-            await safeReply(interaction, await getMinecraftNicknamesById(mentionable.id), true);
+            await safeReply(interaction, (await getMinecraftNicknamesById(mentionable.id)).message, true);
         } else if (mentionable instanceof Role) {
 
             let str = `--stats of role ${mentionable.name}--`;
             const all_members = await guild?.members.fetch();
+            let access_members = 0;
             if (all_members) {
                 for (const [,member] of all_members) {
-                    str += `\n${member.user.tag}: ${await getMinecraftNicknamesById(member.id)}`;
+                    const nicknames = await getMinecraftNicknamesById(member.id);
+                    if (!nicknames.error) {
+                        if (str.length + nicknames.message.length < 1900) {
+                            str += `\n${member.user.tag}: ${nicknames.message}`;
+                        } else {
+                            access_members ++;
+                        }
+                    }
                 }
             }
 
-            await safeReply(interaction, str, true);
+            await safeReply(interaction, str + (access_members > 0) ? `... + ${access_members} more members` : "", true);
         }
 
     }
