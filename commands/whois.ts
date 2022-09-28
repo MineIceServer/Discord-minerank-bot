@@ -48,17 +48,17 @@ export default {
         }
     ],
 
-    callback: async ({ interaction, guild }) => {
+    callback: async ({ interaction }) => {
 
         const mentionable = interaction!.options.getMentionable("member");
         if (mentionable instanceof User || mentionable instanceof GuildMember) {
-            safeReply(interaction, await getMinecraftNicknamesById(mentionable.id), true);
+            await safeReply(interaction, await getMinecraftNicknamesById(mentionable.id), true);
         } else if (mentionable instanceof Role) {
-            const members = (await guild?.roles.fetch(mentionable.id))?.members;
+            const members = mentionable.members;
             let str = `--stats of role ${mentionable.name} (${members?.size} users)--`;
             if (members) {
-                for (const member of members) {
-                    str += `\n${member[1].user.tag}: ${await getMinecraftNicknamesById(member[1].id)}`;
+                for (const [, member] of members) {
+                    str += `\n${member.user.tag}: ${await getMinecraftNicknamesById(member.id)}`;
                 }
             }
             await safeReply(interaction, str, true);

@@ -50,8 +50,7 @@ export async function updateAllRanks(client: Client) {
     dbConnection.query(getAllQuery, async function (err, results) {
 
         if (err) {
-            error(err);
-            return;
+            return error(err);
         }
 
         for (const entry of results) {
