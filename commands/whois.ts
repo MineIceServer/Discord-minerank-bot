@@ -71,7 +71,11 @@ export default {
                 }
             }
 
-            await safeReply(interaction, str + (access_members > 0) ? `... + ${access_members} more members` : "", true);
+            if (access_members > 0) {
+                str += `... + ${access_members} more members`;
+            }
+
+            await safeReply(interaction, str, true);
         }
 
     }
