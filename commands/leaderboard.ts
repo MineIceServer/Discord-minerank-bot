@@ -6,8 +6,8 @@ import { EmbedBuilder } from "discord.js";
 import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
 
 export default {
-    category: 'Ranking',
-    description: 'Display user leaderboard by rank',
+    category: "Ranking",
+    description: "Display user leaderboard by rank",
 
     slash: true,
     testOnly: true,
@@ -21,28 +21,28 @@ export default {
         dbConnection.query(getAllQuery,
             async function (err, results) {
 
-                if(err) {
+                if (err) {
                     error(err);
-                    safeReply(interaction!, "❌ Sql error ocurred");
+                    safeReply(interaction, "❌ Sql error ocurred");
                     return;
                 }
 
-                let embed = new EmbedBuilder();
+                const embed = new EmbedBuilder();
                 embed.setColor("DarkAqua");
                 embed.setTitle(`🏆 Leaderboard`);
 
-                let rank_map = new Map<number, string>();
+                const rank_map = new Map<number, string>();
                 let total_members = 0;
 
-                for(let entry of results) {
+                for (const entry of results) {
                     total_members += setOrAppendToRankMap(rank_map, 
                         calculareRank(entry.chat_activity, entry.game_activity), 
                         (await tryToGetMember(guild!, entry.ds_id.slice(3)))?.user.tag || "");
                 }
 
-                await safeReply(interaction!, sortAndConstructRankMap(embed, rank_map, total_members));
+                await safeReply(interaction, sortAndConstructRankMap(embed, rank_map, total_members));
 
             });
 
     }
-} as ICommand
+} as ICommand;

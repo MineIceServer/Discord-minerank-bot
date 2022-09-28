@@ -1,6 +1,6 @@
-import { colors, error, warn, wrap } from 'discord_bots_common';
-import { status as minestatus } from 'minecraft-server-util';
-import { minecraftServerUrl } from '.';
+import { colors, error, warn, wrap } from "discord_bots_common";
+import { status as minestatus } from "minecraft-server-util";
+import { minecraftServerUrl } from ".";
 
 export async function getServerStatus() {
 

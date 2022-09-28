@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from "discord.js";
 
 import * as mysql from "mysql";
 import YAML from "yaml";
-import { colors, dkrInit, error, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
+import { colors, dkrInit, error, getEnvironmentVar, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
 
 import dotenv from "dotenv"; // evironment vars
 import fs from "fs";
@@ -43,7 +43,7 @@ client.on("ready", () => {
 
     dkrInit(client, __dirname);
 
-    if (!fs.existsSync(process.env.RANK_PLUGIN_CONFIG_PATH!)) {
+    if (!fs.existsSync(getEnvironmentVar("RANK_PLUGIN_CONFIG_PATH"))) {
         error(`invalid rank plugin config path!`);
         process.exit(1);
     }
@@ -53,7 +53,7 @@ client.on("ready", () => {
         process.exit(1);
     }
 
-    const data = YAML.parse(fs.readFileSync(process.env.RANK_PLUGIN_CONFIG_PATH!).toString());
+    const data = YAML.parse(fs.readFileSync(getEnvironmentVar("RANK_PLUGIN_CONFIG_PATH")).toString());
     chatActivityRatio = data.chatActivityRatio || 0;
     gameActivityRatio = data.gameActivityRatio || 0;
 

@@ -1,5 +1,5 @@
 import { ICommand } from "dkrcommands";
-import { colors, error, info, safeReply, wrap } from "discord_bots_common";
+import { colors, error, getEnvironmentVar, info, safeReply, wrap } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
 import fs from "fs";
@@ -31,22 +31,19 @@ export default {
 
     callback: async ({ interaction, user, guild }) => {
 
-        const interaction_nn = interaction!;
-        const new_color = interaction_nn.options.getString("color")!;
-        const clan_role = interaction_nn.options.getRole("clan")!;
+        const new_color = interaction!.options.getString("color")!;
+        const clan_role = interaction!.options.getRole("clan")!;
 
         if (!clan_role.name.startsWith("Clan")) {
-            safeReply(interaction_nn, "🚫 That does not look like a clan, clan roles start with 'Clan'", true);
-            return;
+            return safeReply(interaction, "🚫 That does not look like a clan, clan roles start with 'Clan'", true);
         }
 
         let clans: any;
         try {
-            clans = YAML.parse(fs.readFileSync(process.env.CLAN_PLUGIN_CONFIG_PATH!).toString()).clans.data;
+            clans = YAML.parse(fs.readFileSync(getEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH")).toString()).clans.data;
         } catch (err) {
             error(err);
-            safeReply(interaction_nn, "❌ An error ocurred", true);
-            return;
+            return safeReply(interaction, "❌ An error ocurred", true);
         }
 
         let resolved_color: ColorResolvable;
@@ -54,8 +51,7 @@ export default {
             resolved_color = new_color as ColorResolvable;
         } catch (err) {
             error(err);
-            safeReply(interaction_nn, "❌ Invalid color", true);
-            return;
+            return safeReply(interaction, "❌ Invalid color", true);
         }
 
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = 'id_${user.id}'`,
@@ -63,13 +59,11 @@ export default {
 
                 if (err) {
                     error(err);
-                    safeReply(interaction_nn, "❌ An error occurred", true);
-                    return;
+                    return safeReply(interaction, "❌ An error occurred", true);
                 }
 
                 if (!results.length) {
-                    safeReply(interaction_nn, "❌ Your discord account is not attached to any minecraft account, use `/minecraft` to attach", true);
-                    return;
+                    return safeReply(interaction, "❌ Your discord account is not attached to any minecraft account, use `/minecraft` to attach", true);
                 }
 
                 info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'clan_color' with color ${wrap(new_color, colors.LIGHT_BLUE)}`);
@@ -87,18 +81,16 @@ export default {
                 }
 
                 if (!exists) {
-                    safeReply(interaction_nn, "❌ You don't own any clans", true);
-                    return;
+                    return safeReply(interaction, "❌ You don't own any clans", true);
                 }
 
                 if (!owns) {
-                    safeReply(interaction_nn, "❌ You are not the owner of the clan", true);
-                    return;
+                    return safeReply(interaction, "❌ You are not the owner of the clan", true);
                 }
 
                 (await guild?.roles.fetch())?.get(clan_role.id)?.edit({ color: resolved_color });
 
-                safeReply(interaction_nn, `🎨 Updated color, new color: ${new_color}`, true);
+                safeReply(interaction, `🎨 Updated color, new color: ${new_color}`, true);
             });
 
     }
