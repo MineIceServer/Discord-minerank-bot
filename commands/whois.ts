@@ -60,12 +60,14 @@ export default {
             let access_members = 0;
             if (all_members) {
                 for (const [,member] of all_members) {
-                    const nicknames = await getMinecraftNicknamesById(member.id);
-                    if (!nicknames.error) {
-                        if (str.length + nicknames.message.length < 1900) {
-                            str += `\n${member.user.tag}: ${nicknames.message}`;
-                        } else {
-                            access_members ++;
+                    if (member.roles.cache.has(mentionable.id)) {
+                        const nicknames = await getMinecraftNicknamesById(member.id);
+                        if (!nicknames.error) {
+                            if (str.length + nicknames.message.length < 1900) {
+                                str += `\n${member.user.tag}: ${nicknames.message}`;
+                            } else {
+                                access_members++;
+                            }
                         }
                     }
                 }
