@@ -1,12 +1,10 @@
 import { ICommand } from "dkrcommands";
-import { error, getEnvironmentVar, safeReply } from "discord_bots_common";
+import { error, safeReply } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
 import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
-import fs from "fs";
-import YAML from "yaml";
 import { getClanInfo } from "../clan_utils";
-import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
+import { readClansConfig, setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
 
 export default {
     category: "Ranking",
@@ -21,13 +19,11 @@ export default {
 
         await interaction?.deferReply();
 
-        let clans: any;
-        try {
-            clans = YAML.parse(fs.readFileSync(getEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH")).toString()).clans.data;
-        } catch (err) {
-            error(err);
-            return;
+        const clans = readClansConfig();
+        if (!clans) {
+            return safeReply(interaction, "❌ An error ocurred", true);
         }
+
 
         const allClans: {clanName: string, clan_members: string[]}[]= [];
 
@@ -40,8 +36,7 @@ export default {
 
                 if (err) {
                     error(err);
-                    safeReply(interaction, "❌ Sql error ocurred");
-                    return;
+                    return safeReply(interaction, "❌ Sql error ocurred");
                 }
 
                 const embed = new EmbedBuilder();

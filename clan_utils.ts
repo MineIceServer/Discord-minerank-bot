@@ -1,9 +1,7 @@
-import YAML from "yaml";
-import fs from "fs";
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, getEnvironmentVar } from "discord_bots_common";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
-import { dbConnection, tableName } from ".";
-import { setOrAppendToMap } from "./utis";
+import { tableName } from ".";
+import { readClansConfig, setOrAppendToMap, syncQuery } from "./utis";
 
 export function getClanInfo(clans: any, clan_id: string): { clanName: string, clan_members: string[] } {
     const clan_members: string[] = [];
@@ -19,30 +17,24 @@ export async function updateAllClans(client: Client) {
 
     info(`${wrap("🕓 Time to update all clans", colors.LIGHT_PURPLE)}`);
 
-    let clans;
-    try {
-        clans = YAML.parse(fs.readFileSync(getEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH")).toString()).clans.data;
-    } catch (err) {
-        error(err);
+    const clans = readClansConfig();
+    if (!clans) {
         return;
     }
 
     const discord_id_to_nicknames = new Map<string, string[]>();
     const uuid_to_nickname = new Map<string, string>();
 
-    dbConnection.query(`select * from ${tableName} where ds_id is not null`,
-        async function (err, results) {
+    const res = await syncQuery(`select * from ${tableName} where ds_id is not null`);
 
-            if (err) {
-                error(err);
-                return;
-            }
-
-            for (const result of results) {
-                uuid_to_nickname.set(result.uuid, result.nickname);
-                setOrAppendToMap(discord_id_to_nicknames, result.ds_id.slice(3), result.nickname);
-            }
-        });
+    if (res.error) {
+        return error(res.error);
+    }
+    
+    for (const result of res.results) {
+        uuid_to_nickname.set(result.uuid, result.nickname);
+        setOrAppendToMap(discord_id_to_nicknames, result.ds_id.slice(3), result.nickname);
+    }
 
     const guilds = await getAllGuilds(client);
 

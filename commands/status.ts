@@ -31,8 +31,7 @@ export default {
             if (base64Data) {
                 const file = new AttachmentBuilder(Buffer.from(base64Data, "base64"), { name: "favicon.png" });
                 embed.setThumbnail("attachment://favicon.png");
-                await safeReply(interaction, { embeds: [embed], files: [file] });
-                return;
+                return safeReply(interaction, { embeds: [embed], files: [file] });
             }
 
             await safeReply(interaction, embed);

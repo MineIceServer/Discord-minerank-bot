@@ -5,8 +5,7 @@ import { minecraftServerUrl } from ".";
 export async function getServerStatus() {
 
     if (!minecraftServerUrl) {
-        warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not defined, can't get server status`);
-        return undefined;
+        return warn(`${wrap("LOOKUP_SERVER", colors.LIGHT_YELLOW)} environment variable is not defined, can't get server status`);
     }
 
     try {
@@ -14,7 +13,6 @@ export async function getServerStatus() {
             timeout: 1000 * 5 // timeout in milliseconds
         });
     } catch (err) {
-        error(err);
-        return undefined;
+        return error(err);
     }
 }

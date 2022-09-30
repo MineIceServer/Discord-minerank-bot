@@ -23,8 +23,7 @@ export default {
 
                 if (err) {
                     error(err);
-                    safeReply(interaction, "❌ Sql error ocurred");
-                    return;
+                    return safeReply(interaction, "❌ Sql error ocurred");
                 }
 
                 const embed = new EmbedBuilder();

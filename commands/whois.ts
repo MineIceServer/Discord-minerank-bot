@@ -1,30 +1,27 @@
 import { ICommand } from "dkrcommands";
 import { ApplicationCommandOptionType, GuildMember, Role, User } from "discord.js";
-import { dbConnection, tableName } from "..";
+import { tableName } from "..";
 import { error, safeReply } from "discord_bots_common";
+import { syncQuery } from "../utis";
 
-function getMinecraftNicknamesById(id: string) {
-    return new Promise<{message: string, error?: boolean}>(resolve => {
-        dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`,
-            function (err, results) {
+async function getMinecraftNicknamesById(id: string) {
 
-                if (err) {
-                    error(err);
-                    return resolve({ message: "❌ Sql error ocurred", error: true });
-                }
+    const res = await syncQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`);
 
-                if (results.length) {
-                    let message = "🖇 Associated minecraft nicknames:";
-                    for (const result of results) {
-                        message += ` \`${result.nickname}\``;
-                    }
-                    return resolve({ message: message });
-                } else {
-                    return resolve({ message: "🚫 No associated minecraft nicknames", error: true });
-                }
+    if (res.error) {
+        error(res.error);
+        return { message: "❌ Sql error ocurred", error: true };
+    }
 
-            });
-    });
+    if (res.results.length) {
+        let message = "🖇 Associated minecraft nicknames:";
+        for (const result of res.results) {
+            message += ` \`${result.nickname}\``;
+        }
+        return { message: message };
+    } else {
+        return { message: "🚫 No associated minecraft nicknames", error: true };
+    }
 }
 
 export default {
@@ -50,7 +47,7 @@ export default {
 
     callback: async ({ interaction, guild }) => {
 
-        const mentionable = interaction!.options.getMentionable("member");
+        const mentionable = interaction!.options.getMentionable("member", true);
         if (mentionable instanceof User || mentionable instanceof GuildMember) {
             await safeReply(interaction, (await getMinecraftNicknamesById(mentionable.id)).message, true);
         } else if (mentionable instanceof Role) {
@@ -59,7 +56,7 @@ export default {
             const all_members = await guild?.members.fetch();
             let access_members = 0;
             if (all_members) {
-                for (const [,member] of all_members) {
+                for (const [, member] of all_members) {
                     if (member.roles.cache.has(mentionable.id)) {
                         const nicknames = await getMinecraftNicknamesById(member.id);
                         if (!nicknames.error) {

@@ -27,11 +27,10 @@ export default {
 
     callback: async ({ interaction, user }) => {
 
-        const user_hash = interaction!.options.get("id")!.value?.toString() || "";
+        const user_hash = interaction!.options.getString("id", true);
 
         if (user_hash.startsWith("id_")) {
-            safeReply(interaction, "❌ Invalid id", true);
-            return;
+            return safeReply(interaction, "❌ Invalid id", true);
         }
 
         dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`, 
@@ -40,8 +39,7 @@ export default {
             info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
             if (err || !nickname) {
                 error(err);
-                safeReply(interaction, "❌ Invalid id", true);
-                return;
+                return safeReply(interaction, "❌ Invalid id", true);
             }
 
             dbConnection.query(`UPDATE ${tableName} SET ds_id = 'id_${user.id}' WHERE ds_id = '${user_hash}'`);
