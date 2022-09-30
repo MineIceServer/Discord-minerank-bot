@@ -38,9 +38,10 @@ export async function updateAllRanks(client: Client) {
         info(`🛠 Updating user mee6 levels of ${wrap(members.length, colors.GREEN)} members in ${wrap(guild.name, colors.BLUE)}`);
         try {
             for (const member of members) {
+                info(`🛠 Updating user ${member.user.tag}`);
                 const member_mee = await Mee6LevelsApi.getUserXp(guild, member);
-                info(`🛠 Updating user ${member.user.tag} (${member_mee?.level} | ${member_mee?.rank})`);
-                swapRoles("Level", member, await createRoleIfNotExists(guild, `Level ${member_mee?.level}`, hsvToRgb(((member_mee?.level || 0) / 30.0) % 1, 0.4, 0.9)));
+                info(`level - ${member_mee?.level} | rank - ${member_mee?.rank})`);
+                await swapRoles("Level", member, await createRoleIfNotExists(guild, `Level ${member_mee?.level}`, hsvToRgb(((member_mee?.level || 0) / 30.0) % 1, 0.4, 0.9)));
             }
         } catch (err) {
             error(`${wrap(guild.name, colors.BLUE)} does not have a mee6 bot: ${err}`);
