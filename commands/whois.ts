@@ -16,7 +16,7 @@ function getMinecraftNicknamesById(id: string) {
                 if (results.length) {
                     let message = "🖇 Associated minecraft nicknames:";
                     for (const result of results) {
-                        message += ` ${result.nickname}`;
+                        message += ` \`${result.nickname}\``;
                     }
                     return resolve({ message: message });
                 } else {
