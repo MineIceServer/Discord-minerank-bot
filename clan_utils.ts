@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import fs from "fs";
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from "discord_bots_common";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, getEnvironmentVar } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { dbConnection, tableName } from ".";
 import { setOrAppendToMap } from "./utis";
@@ -19,9 +19,9 @@ export async function updateAllClans(client: Client) {
 
     info(`${wrap("🕓 Time to update all clans", colors.LIGHT_PURPLE)}`);
 
-    let clans: any;
+    let clans;
     try {
-        clans = YAML.parse(fs.readFileSync(process.env.CLAN_PLUGIN_CONFIG_PATH!).toString()).clans.data;
+        clans = YAML.parse(fs.readFileSync(getEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH")).toString()).clans.data;
     } catch (err) {
         error(err);
         return;
