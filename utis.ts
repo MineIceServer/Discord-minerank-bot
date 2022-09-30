@@ -11,8 +11,7 @@ export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<numbe
 
     for (const [rank, members] of rank_map_sorted) {
         if (members) {
-            embed.addFields([
-                {
+            embed.addFields([{
                     name: `Rank ${rank}`,
                     value: members
                 }
