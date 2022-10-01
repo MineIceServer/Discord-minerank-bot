@@ -17,7 +17,7 @@ export let getAllQuery: string;
 export let chatActivityRatio: number;
 export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
-export const minecraftServerUrl = stripUrlScheme(process.env.LOOKUP_SERVER || "");
+export const minecraftServerUrl = stripUrlScheme(getEnvironmentVar("LOOKUP_SERVER"));
 
 const client = new Client({
     rest: {
