@@ -39,7 +39,9 @@ export async function updateAllRanks(client: Client) {
         try {
             for (const member of members) {
                 info(`🛠 Updating user ${member.user.tag}`);
+                const timer = setTimeout(() => { throw new Error("Get xp timed out"); }, 7000);
                 const member_mee = await Mee6LevelsApi.getUserXp(guild, member);
+                clearTimeout(timer);
                 info(`level - ${member_mee?.level} | rank - ${member_mee?.rank})`);
                 await swapRoles("Level", member, await createRoleIfNotExists(guild, `Level ${member_mee?.level}`, hsvToRgb(((member_mee?.level || 0) / 30.0) % 1, 0.4, 0.9)));
             }
