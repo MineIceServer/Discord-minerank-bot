@@ -35,7 +35,7 @@ export async function updateAllClans(client: Client) {
     const discord_id_to_nicknames = new Map<string, string[]>();
     const uuid_to_nickname = new Map<string, string>();
 
-    const res = await syncQuery(`select * from ${tableName} where ds_id is not null`);
+    const res = await syncQuery(`select * from ${tableName} where ds_id LIKE 'id\\_%'`);
 
     if (res.error) {
         return error(res.error);
