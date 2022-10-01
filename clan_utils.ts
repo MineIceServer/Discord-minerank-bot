@@ -1,4 +1,4 @@
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember } from "discord_bots_common";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { tableName } from ".";
 import { readClansConfig, setOrAppendToMap, syncQuery } from "./utis";
@@ -30,7 +30,7 @@ export async function updateAllClans(client: Client) {
     if (res.error) {
         return error(res.error);
     }
-    
+
     for (const result of res.results) {
         uuid_to_nickname.set(result.uuid, result.nickname);
         setOrAppendToMap(discord_id_to_nicknames, result.ds_id.slice(3), result.nickname);
@@ -96,12 +96,17 @@ export async function updateAllClans(client: Client) {
                     }]
                 });
             }
+        } else {
+            for (const guild of guilds) {
+                await deleteChannelIfExists(guild, `${clan_data.clanName}-text`.toLowerCase());
+                await deleteChannelIfExists(guild, `${clan_data.clanName} Voice`);
+            }
         }
     }
 
     for (const [discord_user_id, minecraft_nicknames] of discord_id_to_nicknames) {
         info(`🛠 Updating user: ${wrap(discord_user_id, colors.BLUE)} (minecraft: ${wrap(minecraft_nicknames, colors.LIGHT_GREEN)}) in ${wrap(guilds.length, colors.GREEN)} guilds`);
-        
+
         const clan_names: string[] = [];
         for (const nickname of minecraft_nicknames) {
             const clan_name = nickname_to_clan_name.get(nickname);
@@ -110,15 +115,10 @@ export async function updateAllClans(client: Client) {
             }
         }
 
-        if (!clan_names.length) {
-            info(`🟨 User is not present in any clans`);
-            continue;
-        }
-
         for (const guild of guilds) {
 
             const clan_roles: Role[] = [];
-            
+
             for (const clan_name of clan_names) {
                 clan_roles.push(await createRoleIfNotExists(guild, `Clan '${clan_name}'`, "Random"));
             }
