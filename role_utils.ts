@@ -34,13 +34,14 @@ export async function updateAllRanks(client: Client) {
     info(`🛠 Updating mee6 levels in ${wrap(guilds.length, colors.GREEN)} guilds`);
 
     for (const guild of guilds) {
+        info(`Geting members from ${guildToString(guild)}`);
         const members = await getAllMembers(guild);
         info(`🛠 Updating user mee6 levels of ${wrap(members.length, colors.GREEN)} members in ${wrap(guild.name, colors.BLUE)}`);
         try {
             const leaderBoard = await Mee6LevelsApi.getLeaderboard(guild);
             for (const member of members) {
                 info(`🛠 Updating user ${member.user.tag}`);
-                const member_mee = leaderBoard.find(user => user.id = member.id);
+                const member_mee = leaderBoard.find(user => user.id === member.id);
                 info(`level - ${member_mee?.level} | rank - ${member_mee?.rank})`);
                 await swapRoles("Level", member, await createRoleIfNotExists(guild, `Level ${member_mee?.level}`, hsvToRgb(((member_mee?.level || 0) / 30.0) % 1, 0.4, 0.9)));
             }
