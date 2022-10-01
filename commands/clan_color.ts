@@ -2,7 +2,8 @@ import { ICommand } from "dkrcommands";
 import { colors, error, info, safeReply, wrap } from "discord_bots_common";
 import { tableName } from "..";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
-import { readClansConfig, syncQuery } from "../utis";
+import { syncQuery } from "../utis";
+import { readClansConfig } from "../clan_utils";
 
 export default {
     category: "Clans",

@@ -3,8 +3,8 @@ import { error, safeReply } from "discord_bots_common";
 import { dbConnection, tableName } from "..";
 import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
-import { getClanInfo } from "../clan_utils";
-import { readClansConfig, setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
+import { getClanInfo, readClansConfig } from "../clan_utils";
+import { setOrAppendToRankMap, sortAndConstructRankMap } from "../utis";
 
 export default {
     category: "Ranking",

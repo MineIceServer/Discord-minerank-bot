@@ -1,7 +1,17 @@
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists } from "discord_bots_common";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists, getEnvironmentVar } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { tableName } from ".";
-import { readClansConfig, setOrAppendToMap, syncQuery } from "./utis";
+import { setOrAppendToMap, syncQuery } from "./utis";
+import YAML from "yaml";
+import fs from "fs";
+
+export function readClansConfig() {
+    try {
+        return YAML.parse(fs.readFileSync(getEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH")).toString()).clans.data;
+    } catch (err) {
+        return error(err);
+    }
+}
 
 export function getClanInfo(clans: any, clan_id: string): { clanName: string, clan_members: string[] } {
     const clan_members: string[] = [];
