@@ -1,8 +1,6 @@
-import { Client, GatewayIntentBits } from "discord.js";
-
 import * as mysql from "mysql";
 import YAML from "yaml";
-import { colors, dkrInit, error, getEnvironmentVar, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
+import { colors, dkrInit, error, getClient, getEnvironmentVar, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
 
 import dotenv from "dotenv"; // evironment vars
 import fs from "fs";
@@ -19,40 +17,21 @@ export let gameActivityRatio: number;
 export let dbConnection: mysql.Connection;
 export const minecraftServerUrl = stripUrlScheme(getEnvironmentVar("LOOKUP_SERVER"));
 
-const client = new Client({
-    rest: {
-        timeout: 60000,
-        retries: 3
-    },
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildMessages
-    ]
-});
+const client = getClient();
 
 client.on("ready", () => {
 
+    testEnvironmentVar("TOKEN", true);
     testEnvironmentVar("TEST_SERVERS", true);
     testEnvironmentVar("OWNERS", false);
     testEnvironmentVar("LOOKUP_SERVER", false);
     testEnvironmentVar("RANK_UPDATE_INTERVAL_MINUTES", false);
-    testEnvironmentVar("RANK_PLUGIN_CONFIG_PATH", true);
-    testEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH", false);
+    testEnvironmentVar("RANK_PLUGIN_CONFIG_PATH", true, true);
+    testEnvironmentVar("CLAN_PLUGIN_CONFIG_PATH", false, true);
     testEnvironmentVar("CLAN_CHANNELS_CATEGORY", false);
 
     dkrInit(client, __dirname);
-
-    if (!fs.existsSync(getEnvironmentVar("RANK_PLUGIN_CONFIG_PATH"))) {
-        error(`invalid rank plugin config path!`);
-        process.exit(1);
-    }
-
-    if (!fs.existsSync(process.env.CLAN_PLUGIN_CONFIG_PATH || "")) {
-        error(`invalid clan plugin config path!`);
-        process.exit(1);
-    }
-
+    
     const data = YAML.parse(fs.readFileSync(getEnvironmentVar("RANK_PLUGIN_CONFIG_PATH")).toString());
     chatActivityRatio = data.chatActivityRatio || 0;
     gameActivityRatio = data.gameActivityRatio || 0;
@@ -108,7 +87,7 @@ client.on("ready", () => {
         await updateAllRanks(client);
         // update clans
         await updateAllClans(client);
-    }, parseInt(process.env.RANK_UPDATE_INTERVAL_MINUTES || "10") * 60 * 1000);
+    }, parseInt(getEnvironmentVar("RANK_UPDATE_INTERVAL_MINUTES", "10")) * 60 * 1000);
 });
 
 client.login(process.env.TOKEN);

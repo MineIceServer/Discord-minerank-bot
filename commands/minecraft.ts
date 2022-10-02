@@ -1,8 +1,9 @@
 import { ICommand } from "dkrcommands";
-import { colors, error, info, safeReply, wrap } from "discord_bots_common";
-import { dbConnection, tableName } from "..";
+import { colors, info, safeReply, wrap } from "discord_bots_common";
+import { tableName } from "..";
 import { calculareRank, updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
+import { sqlQuery } from "../utis";
 
 export default {
     category: "Ranking",
@@ -12,7 +13,7 @@ export default {
     testOnly: true,
     ownerOnly: false,
     hidden: false,
-    
+
     options: [
         {
             name: "id",
@@ -33,24 +34,23 @@ export default {
             return safeReply(interaction, "❌ Invalid id", true);
         }
 
-        dbConnection.query(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`, 
-        function (err, results) {
-            const nickname = results[0]?.nickname || "";
-            info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
-            if (err || !nickname) {
-                error(err);
-                return safeReply(interaction, "❌ Invalid id", true);
-            }
+        const res = await sqlQuery(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`);
 
-            dbConnection.query(`UPDATE ${tableName} SET ds_id = 'id_${user.id}' WHERE ds_id = '${user_hash}'`);
-            safeReply(interaction, `📎 Successfully attached to ${nickname}`, true);
-            try {
-                updateUserRank(user.client, user.id, calculareRank(results[0].chat_activity, results[0].game_activity));
-            } catch (err) {
-                safeReply(interaction, `❌ Insufficient permissions: ${err}`, true);
-            }
-            
-        });
+        const nickname = res.results[0]?.nickname || "";
+        info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
+        
+        if (res.error || !nickname) {
+            return safeReply(interaction, "❌ Invalid id", true);
+        }
+
+        const update_res = await sqlQuery(`UPDATE ${tableName} SET ds_id = 'id_${user.id}' WHERE ds_id = '${user_hash}'`);
+
+        if (update_res.error) {
+            return safeReply(interaction, "❌ An error ocurred", true);
+        }
+
+        await safeReply(interaction, `📎 Successfully attached to ${nickname}`, true);
+        await updateUserRank(user.client, user.id, calculareRank(res.results[0].chat_activity, res.results[0].game_activity));
 
     }
 } as ICommand;

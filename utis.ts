@@ -1,4 +1,5 @@
 import { EmbedBuilder } from "discord.js";
+import { error } from "discord_bots_common";
 import { MysqlError } from "mysql";
 import { dbConnection } from ".";
 
@@ -9,8 +10,8 @@ export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<numbe
     for (const [rank, members] of rank_map_sorted) {
         if (members) {
             embed.addFields([{
-                    name: `Rank ${rank}`,
-                    value: members
+                name: `Rank ${rank}`,
+                value: members
                 }
             ]);
         }
@@ -39,10 +40,13 @@ export function setOrAppendToRankMap(rank_map: Map<number, string>, rank: number
     return 0;
 }
 
-export function syncQuery(query: string) {
+export function sqlQuery(query: string) {
     return new Promise<{ results?: any, error: MysqlError | null }>(resolve => {
         dbConnection.query(query,
             function (err, results) {
+                if (err) {
+                    error(`❌ An sql error ocurred while executing query: ${query} | error: ${err}`);
+                }
                 resolve({ results: results, error: err });
             });
     });

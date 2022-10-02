@@ -3,7 +3,7 @@ import { colors, createRoleIfNotExists, error, getAllGuilds, getAllMembers, getB
 import { chatActivityRatio, gameActivityRatio, getAllQuery } from ".";
 
 import Mee6LevelsApi from "mee6-levels-api";
-import { syncQuery } from "./utis";
+import { sqlQuery } from "./utis";
 
 export function calculareRank(chat_activity: number, game_activity: number) {
     return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));
@@ -51,10 +51,10 @@ export async function updateAllRanks(client: Client) {
 
     }
 
-    const res = await syncQuery(getAllQuery);
+    const res = await sqlQuery(getAllQuery);
 
     if (res.error) {
-        return error(res.error);
+        return;
     }
 
     for (const entry of res.results) {

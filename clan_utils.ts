@@ -1,7 +1,7 @@
 import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists, getEnvironmentVar } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { tableName } from ".";
-import { setOrAppendToMap, syncQuery } from "./utis";
+import { setOrAppendToMap, sqlQuery } from "./utis";
 import YAML from "yaml";
 import fs from "fs";
 
@@ -35,7 +35,7 @@ export async function updateAllClans(client: Client) {
     const discord_id_to_nicknames = new Map<string, string[]>();
     const uuid_to_nickname = new Map<string, string>();
 
-    const res = await syncQuery(`select * from ${tableName} where ds_id LIKE 'id\\_%'`);
+    const res = await sqlQuery(`select * from ${tableName} where ds_id LIKE 'id\\_%'`);
 
     if (res.error) {
         return error(res.error);

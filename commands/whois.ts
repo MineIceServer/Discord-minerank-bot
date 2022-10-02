@@ -1,16 +1,15 @@
 import { ICommand } from "dkrcommands";
 import { ApplicationCommandOptionType, GuildMember, Role, User } from "discord.js";
 import { tableName } from "..";
-import { error, safeReply } from "discord_bots_common";
-import { syncQuery } from "../utis";
+import { safeReply } from "discord_bots_common";
+import { sqlQuery } from "../utis";
 
 async function getMinecraftNicknamesById(id: string) {
 
-    const res = await syncQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`);
+    const res = await sqlQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`);
 
     if (res.error) {
-        error(res.error);
-        return { message: "❌ Sql error ocurred", error: true };
+        return { message: "❌ An error ocurred", error: true };
     }
 
     if (res.results.length) {

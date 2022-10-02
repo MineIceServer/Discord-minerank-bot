@@ -2,7 +2,7 @@ import { ICommand } from "dkrcommands";
 import { colors, error, info, safeReply, wrap } from "discord_bots_common";
 import { tableName } from "..";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
-import { syncQuery } from "../utis";
+import { sqlQuery } from "../utis";
 import { readClansConfig } from "../clan_utils";
 
 export default {
@@ -45,10 +45,9 @@ export default {
 
         try {
 
-            const res = await syncQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${user.id}'`);
+            const res = await sqlQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${user.id}'`);
 
             if (res.error) {
-                error(res.error);
                 return safeReply(interaction, "❌ An error occurred", true);
             }
 
