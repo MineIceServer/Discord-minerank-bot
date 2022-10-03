@@ -1,6 +1,6 @@
 import { ICommand } from "dkrcommands";
-import { error, safeReply, tryToGetMember } from "discord_bots_common";
-import { dbConnection, getAllQuery } from "..";
+import { safeReply, tryToGetMember } from "discord_bots_common";
+import { getAllQuery } from "..";
 import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
 import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utis";

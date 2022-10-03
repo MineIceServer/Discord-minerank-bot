@@ -1,7 +1,7 @@
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists, getEnvironmentVar, deleteRoleIfExists } from "discord_bots_common";
+import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists, getEnvironmentVar, deleteRoleIfExists, setOrAppendToMap } from "discord_bots_common";
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { tableName } from ".";
-import { setOrAppendToMap, sqlQuery } from "./utis";
+import { sqlQuery } from "./utis";
 import YAML from "yaml";
 import fs from "fs";
 
@@ -147,5 +147,4 @@ export async function updateAllClans(client: Client) {
             }
         }
     }
-
 }
