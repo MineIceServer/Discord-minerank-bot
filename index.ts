@@ -90,4 +90,4 @@ client.on("ready", () => {
     }, parseInt(getEnvironmentVar("RANK_UPDATE_INTERVAL_MINUTES", "10")) * 60 * 1000);
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKENN);
