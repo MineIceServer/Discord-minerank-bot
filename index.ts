@@ -4,7 +4,7 @@ import { colors, dkrInit, error, getClient, getEnvironmentVar, guildToString, in
 
 import dotenv from "dotenv"; // evironment vars
 import fs from "fs";
-import { updateAllRanks } from "./role_utils";
+import { sortRoles, updateAllRanks } from "./role_utils";
 import { getServerStatus } from "./status_utils";
 import { updateAllClans } from "./clan_utils";
 
@@ -82,11 +82,10 @@ client.on("ready", () => {
         for (const guild of guilds) {
             info(guildToString(guild));
         }
-
-        // update ranks
+        
         await updateAllRanks(client);
-        // update clans
         await updateAllClans(client);
+        await sortRoles(client);
     }, parseInt(getEnvironmentVar("RANK_UPDATE_INTERVAL_MINUTES", "10")) * 60 * 1000);
 });
 
