@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { error } from "discord_bots_common";
 import { MysqlError } from "mysql";
-import { dbConnection } from ".";
+import { dbConnection, tableName } from ".";
 
 export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<number, string>, member_count: number) {
     const rank_map_sorted = new Map([...rank_map.entries()]
@@ -30,6 +30,10 @@ export function setOrAppendToRankMap(rank_map: Map<number, string>, rank: number
         return 1;
     }
     return 0;
+}
+
+export function selectByDiscordId(id: string) {
+    return sqlQuery(`SELECT * from ${tableName} WHERE ds_id = '${id}'`);
 }
 
 export function sqlQuery(query: string) {

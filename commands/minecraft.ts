@@ -3,7 +3,7 @@ import { colors, info, safeReply, wrap } from "discord_bots_common";
 import { tableName } from "..";
 import { calculareRank, updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
-import { sqlQuery } from "../utis";
+import { selectByDiscordId, sqlQuery } from "../utis";
 
 export default {
     category: "Ranking",
@@ -34,7 +34,7 @@ export default {
             return safeReply(interaction, "❌ Invalid id", true);
         }
 
-        const res = await sqlQuery(`SELECT * from ${tableName} WHERE ds_id = '${user_hash}'`);
+        const res = await selectByDiscordId(user_hash);
 
         const nickname = res.results[0]?.nickname || "";
         info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);

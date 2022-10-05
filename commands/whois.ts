@@ -1,12 +1,11 @@
 import { ICommand } from "dkrcommands";
 import { ApplicationCommandOptionType, GuildMember, Role, User } from "discord.js";
-import { tableName } from "..";
 import { safeReply } from "discord_bots_common";
-import { sqlQuery } from "../utis";
+import { selectByDiscordId } from "../utis";
 
 async function getMinecraftNicknamesById(id: string) {
 
-    const res = await sqlQuery(`SELECT * from ${tableName} WHERE ds_id = 'id_${id}'`);
+    const res = await selectByDiscordId(`id_${id}`);
 
     if (res.error) {
         return { message: "❌ An error ocurred", error: true };
