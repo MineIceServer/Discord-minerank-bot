@@ -80,7 +80,7 @@ export async function updateAllClans(client: Client) {
                             type: ChannelType.GuildCategory
                         }) as CategoryChannel;
                     }
-
+                    
                     await createChannelIfNotExists(guild, {
                         name: `${clan_data.clanName}-text`.toLowerCase(),
                         type: ChannelType.GuildText,
