@@ -76,7 +76,7 @@ export async function updateAllClans(client: Client) {
                     let category;
                     if (process.env.CLAN_CHANNELS_CATEGORY) {
                         category = await createChannelIfNotExists(guild, {
-                            name: process.env.CLAN_CHANNELS_CATEGORY,
+                            name: process.env.CLAN_CHANNELS_CATEGORY.trim().toUpperCase(),
                             type: ChannelType.GuildCategory
                         }) as CategoryChannel;
                     }
