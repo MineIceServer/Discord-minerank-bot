@@ -49,7 +49,7 @@ export async function selectByDiscordId(id: string) {
         total_chat_activity += entry.chat_activity;
     }
     
-    return { nicknames: nicknames, uuids: uuids, rank: calculareRank(total_game_activity, total_chat_activity) };
+    return { nicknames: nicknames, uuids: uuids, rank: calculareRank(total_chat_activity, total_game_activity) };
 }
 
 export function sqlQuery(query: string) {
