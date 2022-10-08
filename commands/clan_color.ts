@@ -51,7 +51,7 @@ export default {
                 return safeReply(interaction, "❌ An error occurred", true);
             }
 
-            if (!res.results.length) {
+            if (!res.nicknames.length) {
                 return safeReply(interaction, "❌ Your discord account is not attached to any minecraft account, use `/minecraft` to attach", true);
             }
 
@@ -59,10 +59,10 @@ export default {
 
             let owns = false;
             let exists = false;
-            for (const result of res.results) {
-                if (result.uuid in clans) {
+            for (const uuid of res.uuids) {
+                if (uuid in clans) {
                     exists = true;
-                    if (`Clan '${clans[result.uuid].clanFinalName}'` == clan_role.name) {
+                    if (`Clan '${clans[uuid].clanFinalName}'` == clan_role.name) {
                         owns = true;
                         break;
                     }

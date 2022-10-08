@@ -11,10 +11,10 @@ async function getMinecraftNicknamesById(id: string) {
         return { message: "❌ An error ocurred", error: true };
     }
 
-    if (res.results.length) {
+    if (res.nicknames.length) {
         let message = "🖇 Associated minecraft nicknames:";
-        for (const result of res.results) {
-            message += ` \`${result.nickname}\``;
+        for (const nickname of res.nicknames) {
+            message += ` \`${nickname}\``;
         }
         return { message: message };
     } else {

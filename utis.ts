@@ -2,6 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { error } from "discord_bots_common";
 import { MysqlError } from "mysql";
 import { dbConnection, tableName } from ".";
+import { calculareRank } from "./role_utils";
 
 export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<number, string>, member_count: number) {
     const rank_map_sorted = new Map([...rank_map.entries()]
@@ -12,7 +13,7 @@ export function sortAndConstructRankMap(embed: EmbedBuilder, rank_map: Map<numbe
             embed.addFields([{
                 name: `Rank ${rank}`,
                 value: members
-                }
+            }
             ]);
         }
     }
@@ -32,8 +33,23 @@ export function setOrAppendToRankMap(rank_map: Map<number, string>, rank: number
     return 0;
 }
 
-export function selectByDiscordId(id: string) {
-    return sqlQuery(`SELECT * from ${tableName} WHERE ds_id = '${id}'`);
+export async function selectByDiscordId(id: string) {
+    const res = await sqlQuery(`SELECT * FROM ${tableName} WHERE ds_id='${id}'`);
+    if (res.error) {
+        return { error: res.error };
+    }
+    const nicknames: string[] = [];
+    const uuids: string[] = [];
+    let total_game_activity = 0;
+    let total_chat_activity = 0;
+    for (const entry of res.results) {
+        nicknames.push(entry.nickname);
+        uuids.push(entry.uuid);
+        total_game_activity += entry.game_activity;
+        total_chat_activity += entry.chat_activity;
+    }
+    
+    return { nicknames: nicknames, uuids: uuids, rank: calculareRank(total_game_activity, total_chat_activity) };
 }
 
 export function sqlQuery(query: string) {

@@ -1,7 +1,7 @@
 import { ICommand } from "dkrcommands";
 import { colors, info, safeReply, wrap } from "discord_bots_common";
 import { tableName } from "..";
-import { calculareRank, updateUserRank } from "../role_utils";
+import { updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
 import { selectByDiscordId, sqlQuery } from "../utis";
 
@@ -36,9 +36,9 @@ export default {
 
         const res = await selectByDiscordId(user_hash);
 
-        const nickname = res.results[0]?.nickname || "";
+        const nickname = res.nicknames?.[0];
         info(`📄 ${wrap(user.tag, colors.LIGHT_GREEN)} used 'minecraft' with id ${wrap(user_hash, colors.LIGHT_BLUE)}, got nickname: ${wrap(nickname, colors.LIGHTER_BLUE)}`);
-        
+
         if (res.error || !nickname) {
             return safeReply(interaction, "❌ Invalid id", true);
         }
@@ -49,8 +49,12 @@ export default {
             return safeReply(interaction, "❌ An error ocurred", true);
         }
 
-        await safeReply(interaction, `📎 Successfully attached to ${nickname}`, true);
-        await updateUserRank(user.client, user.id, calculareRank(res.results[0].chat_activity, res.results[0].game_activity));
-
+        const final_user = await selectByDiscordId(user.id);
+        if (final_user.error) {
+            await safeReply(interaction, `❌ Error attaching to ${nickname}`, true);
+        } else {
+            await safeReply(interaction, `📎 Successfully attached to ${nickname}`, true);
+            await updateUserRank(user.client, user.id, final_user.rank);
+        }
     }
 } as ICommand;

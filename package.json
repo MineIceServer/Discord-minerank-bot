@@ -26,7 +26,7 @@
     "@types/mysql": "^2.15.21",
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
-    "eslint": "^8.24.0",
+    "eslint": "^8.25.0",
     "pre-commit": "^1.2.2"
   }
 }
