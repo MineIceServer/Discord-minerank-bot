@@ -49,7 +49,7 @@ export default {
             return safeReply(interaction, "❌ An error ocurred", true);
         }
 
-        const final_user = await selectByDiscordId(user.id);
+        const final_user = await selectByDiscordId(`id_${user.id}`);
         if (final_user.error) {
             await safeReply(interaction, `❌ Error attaching to ${nickname}`, true);
         } else {
