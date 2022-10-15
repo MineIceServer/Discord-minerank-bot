@@ -1,4 +1,9 @@
-import { colors, error, guildToString, info, wrap, createChannelIfNotExists, createRoleIfNotExists, getAllGuilds, swapRoles, tryToGetMember, deleteChannelIfExists, getEnvironmentVar, deleteRoleIfExists, setOrAppendToMap } from "discord_bots_common";
+import { colors, wrap } from "discord_bots_common/dist/utils/colors";
+import { getAllGuilds, createRoleIfNotExists, createChannelIfNotExists, deleteRoleIfExists, deleteChannelIfExists, tryToGetMember, swapRoles } from "discord_bots_common/dist/utils/guild_utils";
+import { getEnvironmentVar } from "discord_bots_common/dist/utils/init_utils";
+import { error, info } from "discord_bots_common/dist/utils/logger";
+import { setOrAppendToMap, guildToString } from "discord_bots_common/dist/utils/utils";
+
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
 import { tableName } from ".";
 import { sqlQuery } from "./utis";

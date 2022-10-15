@@ -2,7 +2,7 @@ import { ICommand } from "dkrcommands";
 import { AttachmentBuilder, EmbedBuilder } from "discord.js";
 import { getServerStatus } from "../status_utils";
 import { minecraftServerUrl } from "..";
-import { safeReply } from "discord_bots_common";
+import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {
     category: "Status",

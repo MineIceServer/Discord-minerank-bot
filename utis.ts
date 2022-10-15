@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { error } from "discord_bots_common";
+import { error } from "discord_bots_common/dist/utils/logger";
 import { MysqlError } from "mysql";
 import { dbConnection, tableName } from ".";
 import { calculareRank } from "./role_utils";

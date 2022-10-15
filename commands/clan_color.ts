@@ -1,9 +1,11 @@
 import { ICommand } from "dkrcommands";
-import { colors, error, info, safeReply, wrap } from "discord_bots_common";
-import { tableName } from "..";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
-import { selectByDiscordId, sqlQuery } from "../utis";
+import { selectByDiscordId } from "../utis";
 import { readClansConfig } from "../clan_utils";
+
+import { colors, wrap } from "discord_bots_common/dist/utils/colors";
+import { info, error } from "discord_bots_common/dist/utils/logger";
+import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {
     category: "Clans",

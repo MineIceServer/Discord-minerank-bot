@@ -1,10 +1,10 @@
 import { ICommand } from "dkrcommands";
-import { safeReply } from "discord_bots_common";
 import { tableName } from "..";
 import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
 import { getClanInfo, readClansConfig } from "../clan_utils";
 import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utis";
+import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {
     category: "Ranking",

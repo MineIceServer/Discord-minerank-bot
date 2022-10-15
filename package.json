@@ -1,6 +1,6 @@
 {
   "name": "mineice_bot",
-  "version": "1.0.4",
+  "version": "1.0.4-1",
   "description": "",
   "main": "index.ts",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "",
   "license": "GPLV3",
   "dependencies": {
-    "discord_bots_common": "github:dgudim/Discord_bots-common",
+    "discord_bots_common": "github:dgudim/Discord-bots-common",
     "discord.js": "^14.6.0",
     "dkrcommands": "^1.0.0-beta.2",
     "dotenv": "^16.0.3",
@@ -27,6 +27,8 @@
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "eslint": "^8.25.0",
+    "eslint-import-resolver-typescript": "^3.5.1",
+    "eslint-plugin-import": "^2.26.0",
     "pre-commit": "^1.2.2"
   }
 }

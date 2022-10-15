@@ -1,9 +1,11 @@
 import { ICommand } from "dkrcommands";
-import { colors, info, safeReply, wrap } from "discord_bots_common";
 import { tableName } from "..";
 import { updateUserRank } from "../role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
 import { selectByDiscordId, sqlQuery } from "../utis";
+import { wrap, colors } from "discord_bots_common/dist/utils/colors";
+import { info } from "discord_bots_common/dist/utils/logger";
+import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {
     category: "Ranking",

@@ -1,6 +1,10 @@
 import { Client, Role, Snowflake } from "discord.js";
-import { colors, createRoleIfNotExists, error, getAllGuilds, getAllMembers, getBaseLog, guildToString, hsvToRgb, info, swapRoles, tryToGetMember, wrap } from "discord_bots_common";
 import { chatActivityRatio, gameActivityRatio, getAllQuery } from ".";
+
+import { colors, wrap } from "discord_bots_common/dist/utils/colors";
+import { getAllGuilds, tryToGetMember, swapRoles, createRoleIfNotExists, getAllMembers } from "discord_bots_common/dist/utils/guild_utils";
+import { info, error } from "discord_bots_common/dist/utils/logger";
+import { getBaseLog, guildToString, hsvToRgb } from "discord_bots_common/dist/utils/utils";
 
 import Mee6LevelsApi from "mee6-levels-api";
 import { sqlQuery } from "./utis";

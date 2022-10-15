@@ -1,9 +1,10 @@
 import { ICommand } from "dkrcommands";
-import { safeReply, tryToGetMember } from "discord_bots_common";
 import { getAllQuery } from "..";
 import { calculareRank } from "../role_utils";
 import { EmbedBuilder } from "discord.js";
 import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utis";
+import { tryToGetMember } from "discord_bots_common/dist/utils/guild_utils";
+import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {
     category: "Ranking",

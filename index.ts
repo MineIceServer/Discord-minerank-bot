@@ -1,6 +1,10 @@
 import * as mysql from "mysql";
 import YAML from "yaml";
-import { colors, dkrInit, error, getClient, getEnvironmentVar, guildToString, info, stripUrlScheme, testEnvironmentVar, wrap } from "discord_bots_common";
+
+import { colors, wrap } from "discord_bots_common/dist/utils/colors";
+import { getEnvironmentVar, getClient, testEnvironmentVar, dkrInit } from "discord_bots_common/dist/utils/init_utils";
+import { error, info } from "discord_bots_common/dist/utils/logger";
+import { stripUrlScheme, guildToString } from "discord_bots_common/dist/utils/utils";
 
 import dotenv from "dotenv"; // evironment vars
 import fs from "fs";
