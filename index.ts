@@ -8,9 +8,9 @@ import { stripUrlScheme, guildToString } from "discord_bots_common/dist/utils/ut
 
 import dotenv from "dotenv"; // evironment vars
 import fs from "fs";
-import { sortRoles, updateAllRanks } from "./role_utils";
-import { getServerStatus } from "./status_utils";
-import { updateAllClans } from "./clan_utils";
+import { sortRoles, updateAllRanks } from "./utils/role_utils";
+import { getServerStatus } from "./utils/status_utils";
+import { updateAllClans } from "./utils/clan_utils";
 
 dotenv.config();
 

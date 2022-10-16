@@ -1,6 +1,6 @@
 import { ICommand } from "dkrcommands";
 import { ApplicationCommandOptionType, GuildMember, Role, User } from "discord.js";
-import { selectByDiscordId } from "../utis";
+import { selectByDiscordId } from "../utils/utils";
 import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 async function getMinecraftNicknamesById(id: string) {

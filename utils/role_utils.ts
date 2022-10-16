@@ -1,5 +1,5 @@
 import { Client, Role, Snowflake } from "discord.js";
-import { chatActivityRatio, gameActivityRatio, getAllQuery } from ".";
+import { chatActivityRatio, gameActivityRatio, getAllQuery } from "..";
 
 import { colors, wrap } from "discord_bots_common/dist/utils/colors";
 import { getAllGuilds, tryToGetMember, swapRoles, createRoleIfNotExists, getAllMembers } from "discord_bots_common/dist/utils/guild_utils";
@@ -7,7 +7,7 @@ import { info, error } from "discord_bots_common/dist/utils/logger";
 import { getBaseLog, guildToString, hsvToRgb } from "discord_bots_common/dist/utils/utils";
 
 import Mee6LevelsApi from "mee6-levels-api";
-import { sqlQuery } from "./utis";
+import { sqlQuery } from "./utils";
 
 export function calculareRank(chat_activity: number, game_activity: number) {
     return Math.floor(getBaseLog(2, chatActivityRatio * chat_activity + gameActivityRatio * game_activity + 1));

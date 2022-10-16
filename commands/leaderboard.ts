@@ -1,8 +1,8 @@
 import { ICommand } from "dkrcommands";
 import { getAllQuery } from "..";
-import { calculareRank } from "../role_utils";
+import { calculareRank } from "../utils/role_utils";
 import { EmbedBuilder } from "discord.js";
-import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utis";
+import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utils/utils";
 import { tryToGetMember } from "discord_bots_common/dist/utils/guild_utils";
 import { safeReply } from "discord_bots_common/dist/utils/utils";
 

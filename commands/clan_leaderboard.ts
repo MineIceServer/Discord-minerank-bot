@@ -1,9 +1,9 @@
 import { ICommand } from "dkrcommands";
 import { tableName } from "..";
-import { calculareRank } from "../role_utils";
+import { calculareRank } from "../utils/role_utils";
 import { EmbedBuilder } from "discord.js";
-import { getClanInfo, readClansConfig } from "../clan_utils";
-import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utis";
+import { getClanInfo, readClansConfig } from "../utils/clan_utils";
+import { setOrAppendToRankMap, sortAndConstructRankMap, sqlQuery } from "../utils/utils";
 import { safeReply } from "discord_bots_common/dist/utils/utils";
 
 export default {

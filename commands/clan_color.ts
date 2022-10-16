@@ -1,7 +1,7 @@
 import { ICommand } from "dkrcommands";
 import { ApplicationCommandOptionType, ColorResolvable } from "discord.js";
-import { selectByDiscordId } from "../utis";
-import { readClansConfig } from "../clan_utils";
+import { selectByDiscordId } from "../utils/utils";
+import { readClansConfig } from "../utils/clan_utils";
 
 import { colors, wrap } from "discord_bots_common/dist/utils/colors";
 import { info, error } from "discord_bots_common/dist/utils/logger";

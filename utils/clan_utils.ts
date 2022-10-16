@@ -5,10 +5,10 @@ import { error, info } from "discord_bots_common/dist/utils/logger";
 import { setOrAppendToMap, guildToString } from "discord_bots_common/dist/utils/utils";
 
 import { CategoryChannel, ChannelType, Client, Role } from "discord.js";
-import { tableName } from ".";
-import { sqlQuery } from "./utis";
 import YAML from "yaml";
 import fs from "fs";
+import { tableName } from "..";
+import { sqlQuery } from "./utils";
 
 export function readClansConfig() {
     try {

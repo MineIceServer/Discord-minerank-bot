@@ -1,8 +1,8 @@
 import { ICommand } from "dkrcommands";
 import { tableName } from "..";
-import { updateUserRank } from "../role_utils";
+import { updateUserRank } from "../utils/role_utils";
 import { ApplicationCommandOptionType } from "discord.js";
-import { selectByDiscordId, sqlQuery } from "../utis";
+import { selectByDiscordId, sqlQuery } from "../utils/utils";
 import { wrap, colors } from "discord_bots_common/dist/utils/colors";
 import { info } from "discord_bots_common/dist/utils/logger";
 import { safeReply } from "discord_bots_common/dist/utils/utils";
