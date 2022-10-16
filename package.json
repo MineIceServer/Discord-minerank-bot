@@ -1,16 +1,23 @@
 {
   "name": "mineice_bot",
   "version": "1.0.4-1",
-  "description": "",
+  "description": "Discord rank sync bot built with discord.js",
   "main": "index.ts",
+  "author": "Danila Gudim <dgudim@gmail.com>",
+  "private": true,
+  "homepage": "https://github.com/dgudim/Discord-minerank-bot",
+  "repository": "github:dgudim/Discord-minerank-bot",
+  "bugs": "https://github.com/dgudim/Discord-minerank-bot/ssues",
   "scripts": {
+    "start": "ts-node ./index.ts",
     "lint": "eslint --ext .ts ."
+  },
+   "engines": {
+    "node": ">=17.0.0"
   },
   "pre-commit": [
     "lint"
   ],
-  "keywords": [],
-  "author": "",
   "license": "GPLV3",
   "dependencies": {
     "discord_bots_common": "github:dgudim/Discord-bots-common",
@@ -29,6 +36,7 @@
     "eslint": "^8.25.0",
     "eslint-import-resolver-typescript": "^3.5.1",
     "eslint-plugin-import": "^2.26.0",
-    "pre-commit": "^1.2.2"
+    "pre-commit": "^1.2.2",
+    "ts-node": "^10.9.1"
   }
 }
