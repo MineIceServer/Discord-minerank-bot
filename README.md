@@ -6,7 +6,7 @@
 ## Requirements
 
 1. Discord Bot Token **[Guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**  
-2. Node.js 17.7.0 or newer
+2. Node.js 17.0.0 or newer
 
 ## 🚀 Getting Started
 
@@ -16,7 +16,7 @@ cd Discord-minerank-bot
 npm install
 ```
 
-After installation finishes follow configuration instructions then run `ts-node` to start the bot.
+After installation finishes follow configuration instructions then run `npm run start` to start the bot.
 
 ## ⚙️ Configuration
 
