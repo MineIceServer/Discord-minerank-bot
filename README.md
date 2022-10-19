@@ -2,8 +2,8 @@
 
 <img src="https://user-images.githubusercontent.com/34401005/196668897-6d98bae8-a76a-4bd8-aef3-eb9aab473d7a.png" height=150 id="icon"></img>
 
-> MineRank is a Discord bot built with TypeScript, discord.js & uses [DKRCommands](https://github.com/karelkryda/DKRCommands) Command Handler <br>
-> It attaches your discord account to a minecraft account.
+MineRank is a Discord bot built with TypeScript, discord.js & uses [DKRCommands](https://github.com/karelkryda/DKRCommands) Command Handler <br>
+It attaches your discord account to a minecraft account.
 
 ## Requirements
 
