@@ -1,7 +1,9 @@
-# 🤖 MineRank
+<h1 id="title">🤖 MineRank</h1>
 
-> MineRank is a Discord bot built with TypeScript, discord.js & uses [DKRCommands](https://github.com/karelkryda/DKRCommands) Command Handler <br>
-> It attaches your discord account to a minecraft account.
+<img src="https://user-images.githubusercontent.com/34401005/196668897-6d98bae8-a76a-4bd8-aef3-eb9aab473d7a.png" height=150 id="icon"></img>
+
+MineRank is a Discord bot built with TypeScript, discord.js & uses [DKRCommands](https://github.com/karelkryda/DKRCommands) Command Handler <br>
+It attaches your discord account to a minecraft account.
 
 ## Requirements
 
@@ -46,3 +48,6 @@ CLAN_CHANNELS_CATEGORY=<Category name for autocreated clan channels>
   2. Integrates with [RankSystem](https://github.com/HSBEST13/RankSystem) minecraft plugin and syncs ranks with discord
   3. `/leaderboard` and `/clan_leaderboard` commands to view the leaderbords
   4. `/status` command to see basic information about your minecraft server
+  5. Displays player count in it's status
+  
+<img src="https://user-images.githubusercontent.com/34401005/196669805-93e9771e-217c-4bd7-acea-400ad26986ad.png" height=300 id="thumb"></img>
