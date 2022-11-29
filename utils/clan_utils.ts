@@ -60,23 +60,26 @@ export async function updateAllClans(client: Client) {
 
         const clan_data = getClanInfo(clans, clan_id);
 
-        let create_clan = false;
+        let clan_members = 0;
 
         for (const clan_members_uuid of clan_data.clan_members) {
             const nickname = uuid_to_nickname.get(clan_members_uuid);
             if (nickname) {
                 nickname_to_clan_name.set(nickname, clan_data.clanName);
-                create_clan = true;
+                clan_members++;
+                if (clan_members == 2) {
+                    break;
+                }
             } else {
                 info(`🟨 Clan member ${wrap(clan_members_uuid, colors.CYAN)} doesn't have a connected discord account`);
             }
         }
 
-        // create clan if it has at least one member registered in discord
-        if (create_clan) {
+        // create clan if it has at least 2 members registered in discord
+        if (clan_members >= 2) {
             for (const guild of guilds) {
                 const clan_role = await createRoleIfNotExists(guild, `Clan '${clan_data.clanName}'`, "Random");
-
+                
                 if (clan_role) {
                     let category;
                     if (process.env.CLAN_CHANNELS_CATEGORY) {
@@ -85,9 +88,9 @@ export async function updateAllClans(client: Client) {
                             type: ChannelType.GuildCategory
                         }) as CategoryChannel;
                     }
-                    
+
                     await createChannelIfNotExists(guild, {
-                        name: `${clan_data.clanName}-text`.toLowerCase(),
+                        name: `${clan_data.clanName}-text`.replaceAll(".", "-").toLowerCase(),
                         type: ChannelType.GuildText,
                         parent: category,
                         permissionOverwrites: [{
@@ -117,7 +120,7 @@ export async function updateAllClans(client: Client) {
         } else {
             for (const guild of guilds) {
                 await deleteRoleIfExists(guild, `Clan '${clan_data.clanName}'`);
-                await deleteChannelIfExists(guild, `${clan_data.clanName}-text`.toLowerCase());
+                await deleteChannelIfExists(guild, `${clan_data.clanName}-text`.replaceAll(".", "-").toLowerCase());
                 await deleteChannelIfExists(guild, `${clan_data.clanName} Voice`);
             }
         }
