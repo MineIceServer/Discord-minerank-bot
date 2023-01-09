@@ -45,7 +45,7 @@ CLAN_CHANNELS_CATEGORY=<Category name for autocreated clan channels>
 
 ## 📝 Features
   1. Integrates with [ClansLite](https://www.spigotmc.org/resources/clanslite-1-19-support.97163/) plugin and syncs clans with discord, creates personal voice and text channel per clan
-  2. Integrates with [RankSystem](https://github.com/HSBEST13/RankSystem) minecraft plugin and syncs ranks with discord
+  2. Integrates with [RankSystem](https://github.com/MineIceServer/RankSystem) minecraft plugin and syncs ranks with discord
   3. `/leaderboard` and `/clan_leaderboard` commands to view the leaderbords
   4. `/status` command to see basic information about your minecraft server
   5. Displays player count in it's status
